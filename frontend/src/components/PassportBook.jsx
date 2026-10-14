@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react'
 import { Link } from 'react-router-dom'
 import Icon from './Icon'
 import { Seal } from './Seal'
@@ -69,17 +69,99 @@ export default function PassportBook({ user, stamps, places, total, cities, rewa
   const next = () => go(index + 1)
   const prev = () => go(index - 1)
 
-  // Swipe sideways to turn (vertical drags stay free for scrolling the page).
-  const start = useRef(null)
-  const onPointerDown = (e) => { start.current = { x: e.clientX, y: e.clientY } }
+  // ---- Drag to turn ------------------------------------------------------------
+  // Grab the stamp page and pull it toward the spine to turn forward, or grab the holder's page
+  // and pull it away to bring the previous stamp back. While dragging, the sheet's angle comes from
+  // the pointer: the point you grabbed stays under your finger (its distance from the spine's
+  // middle is cos(angle) × the grab distance). On release it finishes or springs back from there.
+  const bookRef = useRef(null)
+  const spineRef = useRef(null)
+  const sheetRef = useRef(null)
+  const drag = useRef(null)
+  const dragged = useRef(false)
+  const raf = useRef(0)
+  useEffect(() => () => cancelAnimationFrame(raf.current), [])
+
+  const applyAngle = (deg) => {
+    if (drag.current) drag.current.angle = deg
+    if (sheetRef.current) sheetRef.current.style.transform = `rotateY(${isRtl ? deg : -deg}deg)`
+    bookRef.current?.style.setProperty('--p', String(deg / 180))
+  }
+  // The sheet mounts on the render after a drag starts: put it at the drag's angle straight away.
+  useLayoutEffect(() => { if (turn?.manual && drag.current) applyAngle(drag.current.angle) })
+
+  const onPointerDown = (e) => {
+    dragged.current = false // a fresh press: only a drag that starts now may swallow the next click
+    if (turnRef.current || (e.pointerType === 'mouse' && e.button !== 0)) return
+    const onStamp = e.target.closest('.leaf-stack')
+    const onHolder = !onStamp && e.target.closest('.book > .identity')
+    const dir = onStamp ? 'next' : onHolder ? 'prev' : null
+    if (!dir || (dir === 'next' && index >= pages.length - 1) || (dir === 'prev' && index === 0)) return
+    drag.current = { phase: 'pending', dir, id: e.pointerId, x0: e.clientX, y0: e.clientY, lastX: e.clientX, lastT: e.timeStamp, v: 0, angle: dir === 'next' ? 0 : 180 }
+  }
+
+  const onPointerMove = (e) => {
+    const d = drag.current
+    if (!d || e.pointerId !== d.id) return
+    if (d.phase === 'pending') {
+      const dx = e.clientX - d.x0
+      const dy = e.clientY - d.y0
+      if (Math.abs(dy) > 12 && Math.abs(dy) > Math.abs(dx)) { drag.current = null; return } // scrolling, not turning
+      if (Math.abs(dx) < 8) return
+      const towardSpine = isRtl ? dx > 0 : dx < 0
+      if ((d.dir === 'next') !== towardSpine) { drag.current = null; return }
+      const spine = spineRef.current.getBoundingClientRect()
+      d.pivot = spine.left + spine.width / 2
+      d.grab = Math.max(30, Math.abs(d.x0 - d.pivot))
+      d.phase = 'active'
+      dragged.current = true
+      try { bookRef.current.setPointerCapture(e.pointerId) } catch { /* not supported */ }
+      const tr = { from: index, to: d.dir === 'next' ? index + 1 : index - 1, dir: d.dir, manual: true }
+      turnRef.current = tr
+      setTurn(tr)
+    }
+    // Signed distance from the spine's middle, toward the stamp page.
+    const along = isRtl ? d.pivot - e.clientX : e.clientX - d.pivot
+    const cos = Math.max(-1, Math.min(1, along / d.grab))
+    applyAngle((Math.acos(cos) * 180) / Math.PI)
+    const dt = Math.max(1, e.timeStamp - d.lastT)
+    d.v = 0.7 * d.v + 0.3 * ((e.clientX - d.lastX) / dt) // px per ms, smoothed
+    d.lastX = e.clientX
+    d.lastT = e.timeStamp
+  }
+
   const onPointerUp = (e) => {
-    const s = start.current; start.current = null
-    if (!s) return
-    const dx = e.clientX - s.x
-    const dy = e.clientY - s.y
-    if (Math.abs(dx) < 40 || Math.abs(dx) < Math.abs(dy)) return
-    const forward = isRtl ? dx > 0 : dx < 0
-    if (forward) next(); else prev()
+    const d = drag.current
+    if (!d || e.pointerId !== d.id) return
+    drag.current = null
+    if (d.phase !== 'active') return
+    // A quick flick toward the other side turns the page even before it's halfway, but only if the
+    // finger is still moving when it lets go (a pause before release means "put it back").
+    const v = e.timeStamp - d.lastT > 90 ? 0 : d.v
+    const speed = isRtl ? -v : v // positive = moving toward the stamp page
+    const complete = d.dir === 'next' ? (d.angle > 90 || speed < -0.3) : (d.angle < 90 || speed > 0.3)
+    const target = (d.dir === 'next') === complete ? 180 : 0
+    const from = d.angle
+    const ms = 140 + (380 * Math.abs(target - from)) / 180
+    if (complete && sound) playPageTurn(Math.max(0.25, ms / 1000))
+    const t0 = performance.now()
+    const step = (now) => {
+      const k = Math.min(1, (now - t0) / ms)
+      const ease = 1 - Math.pow(1 - k, 3)
+      applyAngle(from + (target - from) * ease)
+      if (k < 1) { raf.current = requestAnimationFrame(step); return }
+      const tr = turnRef.current
+      turnRef.current = null
+      if (complete && tr) setIndex(tr.to)
+      setTurn(null)
+      bookRef.current?.style.removeProperty('--p')
+    }
+    raf.current = requestAnimationFrame(step)
+  }
+
+  // A drag ends with a click on whatever was under the finger; don't let it open a stamp.
+  const onClickCapture = (e) => {
+    if (dragged.current) { e.preventDefault(); e.stopPropagation(); dragged.current = false }
   }
   const onKeyDown = (e) => {
     const fwd = isRtl ? 'ArrowLeft' : 'ArrowRight'
@@ -102,13 +184,15 @@ export default function PassportBook({ user, stamps, places, total, cities, rewa
 
   return (
     <div className="book-wrap">
-      <div className={`book ${turn ? `is-turning turning-${turn.dir}` : ''}`} role="region" aria-roledescription={t('book.role')} aria-label={t('book.label')} tabIndex={0} onKeyDown={onKeyDown}>
+      <div ref={bookRef} className={`book ${turn ? `is-turning turning-${turn.dir}` : ''} ${turn?.manual ? 'manual' : ''} ${index > 0 ? 'can-prev' : ''} ${index < pages.length - 1 ? 'can-next' : ''}`}
+        role="region" aria-roledescription={t('book.role')} aria-label={t('book.label')} tabIndex={0} onKeyDown={onKeyDown}
+        onPointerDown={onPointerDown} onPointerMove={onPointerMove} onPointerUp={onPointerUp} onPointerCancel={onPointerUp} onClickCapture={onClickCapture}>
         <IdentityPage user={user} count={stampCount} total={total} cities={cities} rewards={rewards} />
-        <div className="book-spine" aria-hidden="true">{Array.from({ length: 9 }, (_, i) => <span key={i} className="ring" />)}</div>
-        <div className="leaf-stack" onPointerDown={onPointerDown} onPointerUp={onPointerUp} onPointerCancel={() => { start.current = null }}>
+        <div ref={spineRef} className="book-spine" aria-hidden="true">{Array.from({ length: 9 }, (_, i) => <span key={i} className="ring" />)}</div>
+        <div className="leaf-stack">
           <div className="leaf base">{render(shownIndex)}</div>
           {turn && (
-            <div className={`leaf turning turn-${turn.dir}`} onAnimationEnd={(e) => { if (e.target === e.currentTarget) finish() }} aria-hidden="true">
+            <div ref={sheetRef} className={`leaf turning turn-${turn.dir} ${turn.manual ? 'manual' : ''}`} onAnimationEnd={(e) => { if (!turn.manual && e.target === e.currentTarget) finish() }} aria-hidden="true">
               <div className="face front">{render(turningIndex)}</div>
               <div className="face back"><IdentityPage user={user} count={stampCount} total={total} cities={cities} rewards={rewards} /></div>
             </div>

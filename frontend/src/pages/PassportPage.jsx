@@ -5,8 +5,9 @@ import { Seal } from '../components/Seal'
 import ShareCardSheet, { stampCard } from '../components/ShareCard'
 import { Milestones, Trails } from '../components/Journey'
 import PassportBook from '../components/PassportBook'
+import ClosedPassport from '../components/ClosedPassport'
 import { StoryCard } from '../components/PlaceStory'
-import { Empty, ErrorState, Progress, Section, Segmented, Sheet, SignInPrompt, Skeleton, SkeletonRows } from '../components/ui'
+import { Empty, ErrorState, Progress, Section, Segmented, Sheet, Skeleton, SkeletonRows } from '../components/ui'
 import { useAuth } from '../context/AuthContext'
 import { useI18n } from '../i18n/I18nContext'
 import { useGovernorates, usePassport, usePlaceStory, usePlaces, useRewards } from '../api/hooks'
@@ -61,7 +62,7 @@ export default function PassportPage() {
   if (!user) {
     return (
       <div className="page">
-        <SignInPrompt title={t('passport.guestTitle')} text={t('passport.guestText')} />
+        <ClosedPassport />
       </div>
     )
   }
