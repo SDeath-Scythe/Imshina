@@ -708,12 +708,10 @@ input[type='range'] { accent-color: var(--lapis); width: 100%; }
 [dir='rtl'] .closed-book:hover .pp-cover, [dir='rtl'] .closed-book:focus-visible .pp-cover { transform: rotateY(16deg); }
 .pp-cover-frame { position: absolute; inset: 14px; border: 1.5px solid rgba(232, 196, 106, 0.55); border-radius: 6px; pointer-events: none; }
 .pp-cover-frame::after { content: ''; position: absolute; inset: 5px; border: 1px solid rgba(232, 196, 106, 0.3); border-radius: 4px; }
-.pp-cover-top { display: flex; flex-direction: column; align-items: center; gap: 2px; margin-bottom: 6px; }
-.pp-cover-ar { font-family: 'Reem Kufi', 'IBM Plex Sans Arabic', sans-serif; font-size: 15px; font-weight: 600; }
-.pp-cover-en, .pp-cover-sub { font-size: 10px; font-weight: 600; letter-spacing: 0.24em; }
+.pp-cover-sub { font-size: 10px; font-weight: 600; letter-spacing: 0.24em; }
+.pp-cover-brand { position: absolute; bottom: 30px; font-size: 9.5px; font-weight: 700; letter-spacing: 0.4em; opacity: 0.75; }
 .pp-cover-emblem { filter: drop-shadow(0 1px 0 rgba(0, 0, 0, 0.4)); }
 .pp-cover-title { font-family: 'Reem Kufi', 'IBM Plex Sans Arabic', sans-serif; font-size: 30px; font-weight: 700; line-height: 1.2; text-shadow: 0 1px 0 rgba(0, 0, 0, 0.45); margin-top: 6px; }
-.pp-cover-chip svg { width: 34px; height: 22px; margin-top: 10px; opacity: 0.9; }
 .closed-rings { position: absolute; top: 8%; bottom: 8%; inset-inline-start: -9px; display: flex; flex-direction: column; justify-content: space-between; }
 .closed-rings .ring { width: 22px; height: 7px; }
 .closed-text { display: flex; flex-direction: column; align-items: center; gap: 10px; text-align: center; max-width: 360px; }

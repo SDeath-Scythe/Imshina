@@ -13,16 +13,11 @@ export default function ClosedPassport() {
         <span className="pp-cover-pages" aria-hidden="true" />
         <span className="pp-cover">
           <span className="pp-cover-frame" aria-hidden="true" />
-          <span className="pp-cover-top">
-            <span className="pp-cover-ar" lang="ar">جمهورية العراق</span>
-            <span className="pp-cover-en">REPUBLIC OF IRAQ</span>
-          </span>
+          {/* Brand only: no state names or official passport marks, so nobody mistakes this for a government document. */}
           <span className="pp-cover-emblem" aria-hidden="true"><GateArt width={96} tower="rgba(232, 196, 106, 0.2)" arch="rgba(14, 29, 76, 0.6)" line="#E8C46A" reliefs /></span>
           <span className="pp-cover-title" lang="ar">جواز امشينا</span>
           <span className="pp-cover-sub">HERITAGE PASSPORT</span>
-          <span className="pp-cover-chip" aria-hidden="true">
-            <svg viewBox="0 0 40 26"><rect x="1" y="1" width="38" height="24" rx="4" fill="none" stroke="#E8C46A" strokeWidth="2" /><circle cx="20" cy="13" r="6" fill="none" stroke="#E8C46A" strokeWidth="2" /><path d="M1 13h13M26 13h13" stroke="#E8C46A" strokeWidth="2" /></svg>
-          </span>
+          <span className="pp-cover-brand">IMSHINA</span>
         </span>
         <span className="closed-rings" aria-hidden="true">{Array.from({ length: 9 }, (_, i) => <span key={i} className="ring" />)}</span>
       </Link>
