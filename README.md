@@ -36,7 +36,7 @@ Most travel apps help you plan a trip. Imshina rewards you for actually going. E
 
 **Travellers**
 - **Discover** 18 heritage sites across 4 cities, with history timelines, visiting tips, maps and a "find nearest" button.
-- **Collect stamps** in a digital passport. Each one is a photo taken on site, checked against your distance from the place.
+- **Collect stamps** in a passport that works like a notebook: your details stay on one page, and each stamp gets its own page that turns like paper. A stamp is your own photo framed as a postage stamp, with the place name in script and a postmark in the city's ink. Every photo is taken on site and checked against your distance from the place.
 - **Unlock a story** at each site: a surprising fact and one thing to look for while you're standing there. The server only sends it once you hold that place's stamp.
 - **Share a stamp** as a story-sized image: the stamp, the place and "5 of 18", ready for Instagram or WhatsApp.
 - **Follow trails** such as *Old Baghdad* or *Heart of Babylon*, reach milestones, and earn a shareable certificate for stamping all 18 sites.
@@ -70,7 +70,11 @@ Most travel apps help you plan a trip. Imshina rewards you for actually going. E
 
 ![Passport, booking a guide by date, the guide's booking inbox, and the passport in Arabic](docs/screenshots/screens.png)
 
-Passport with per-city progress · booking a guide for two days · a guide's booking requests · the same passport in Arabic (right to left)
+The passport notebook · booking a guide for two days · a guide's booking requests · the passport in Arabic
+
+On wider screens the passport opens as a spread: the holder's page stays put and stamp pages turn.
+
+![The passport as an open notebook on a wide screen](docs/screenshots/passport-desktop.png)
 
 ![A shareable stamp card, trails in the passport, the insights page for tourism authorities, and the Before you go page](docs/screenshots/features.png)
 

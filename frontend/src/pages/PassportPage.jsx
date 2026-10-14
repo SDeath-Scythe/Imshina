@@ -4,8 +4,9 @@ import Icon from '../components/Icon'
 import { Seal } from '../components/Seal'
 import ShareCardSheet, { stampCard } from '../components/ShareCard'
 import { Milestones, Trails } from '../components/Journey'
+import PassportBook from '../components/PassportBook'
 import { StoryCard } from '../components/PlaceStory'
-import { Avatar, Empty, ErrorState, Progress, Section, Segmented, Sheet, SignInPrompt, Skeleton, SkeletonRows } from '../components/ui'
+import { Empty, ErrorState, Progress, Section, Segmented, Sheet, SignInPrompt, Skeleton, SkeletonRows } from '../components/ui'
 import { useAuth } from '../context/AuthContext'
 import { useI18n } from '../i18n/I18nContext'
 import { useGovernorates, usePassport, usePlaceStory, usePlaces, useRewards } from '../api/hooks'
@@ -79,32 +80,14 @@ export default function PassportPage() {
 
   return (
     <>
-      <header className="hero-top bricks" style={{ '--brick': 'var(--lapis-deep)' }}>
-        <div className="row-between" style={{ alignItems: 'flex-start' }}>
-          <span className="stack" style={{ '--gap': '0px' }}>
-            <span className="hero-eyebrow">{t('passport.cover')}</span>
-            <span className="display" lang="ar" style={{ fontSize: 26, color: 'var(--gold)', lineHeight: 1.4 }}>جواز امشينا</span>
-          </span>
-          <span className="small" style={{ color: '#B9BFD3', textAlign: 'end' }}>{t('passport.number', { id: `IMS-${String(user.id).padStart(6, '0')}` })}</span>
-        </div>
-        <div className="row" style={{ '--gap': '14px' }}>
-          <Avatar name={user.fullName} size={56} />
-          <span className="stack" style={{ '--gap': '0px' }}>
-            <b style={{ fontSize: 17 }}>{user.fullName}</b>
-            <span className="small" style={{ color: '#B9BFD3' }}>{user.country}</span>
-          </span>
-        </div>
-        <div className="grid-3">
-          <div className="stat on-dark"><b className="display num">{count}<span style={{ fontSize: 14, color: '#B9BFD3' }}>/{total || '–'}</span></b><span>{t('passport.stamps')}</span></div>
-          <div className="stat on-dark"><b className="display num">{citiesVisited}</b><span>{t('passport.cities')}</span></div>
-          <div className="stat on-dark"><b className="display num" style={{ color: 'var(--gold)' }}>{unlocked}</b><span>{t('passport.rewards')}</span></div>
-        </div>
-      </header>
-
       <div className="page">
         {passport.error && <ErrorState error={passport.error} onRetry={passport.reload} />}
-        {(passport.loading || places.loading || govs.loading) ? <Skeleton h={320} r={20} /> : (
+        {(passport.loading || places.loading || govs.loading) ? <Skeleton h={560} r={18} /> : (
           <>
+            <h1 className="sr-only">{t('nav.passport')}</h1>
+            <PassportBook user={user} stamps={stamps} places={places.data || []} total={total} cities={citiesVisited} rewards={unlocked} onOpenStamp={setOpen} />
+
+            <h2 style={{ marginTop: 8 }}>{t('passport.allPlaces')}</h2>
             {count === 0 && (
               <div className="notice info">
                 <Icon name="stamp" size={20} />
