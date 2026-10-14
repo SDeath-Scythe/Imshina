@@ -1,0 +1,39 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "Run API",
+      "type": "shell",
+      "command": "dotnet",
+      "args": ["run", "--project", "backend/TourIraq.Api/TourIraq.Api.csproj"],
+      "isBackground": true,
+      "problemMatcher": [],
+      "group": "build"
+    },
+    {
+      "label": "Run frontend",
+      "type": "shell",
+      "command": "npm",
+      "args": ["--prefix", "frontend", "run", "dev", "--", "--host", "0.0.0.0"],
+      "isBackground": true,
+      "problemMatcher": [],
+      "group": "build"
+    },
+    {
+      "label": "Build API",
+      "type": "shell",
+      "command": "dotnet",
+      "args": ["build", "backend/TourIraq.Api/TourIraq.Api.csproj", "--configuration", "Release"],
+      "problemMatcher": "$msCompile",
+      "group": "build"
+    },
+    {
+      "label": "Build frontend",
+      "type": "shell",
+      "command": "npm",
+      "args": ["--prefix", "frontend", "run", "build"],
+      "problemMatcher": [],
+      "group": "build"
+    }
+  ]
+}

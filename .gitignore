@@ -1,0 +1,24 @@
+# .NET
+bin/
+obj/
+.vs/
+*.user
+
+# SQLite database (created on first run)
+*.db
+*.db-shm
+*.db-wal
+
+# Uploaded stamp photos (keep the folder)
+backend/TourIraq.Api/wwwroot/uploads/*
+!backend/TourIraq.Api/wwwroot/uploads/.gitkeep
+
+# Frontend
+node_modules/
+dist/
+.env
+.env.local
+
+# OS / editors
+.DS_Store
+Thumbs.db
