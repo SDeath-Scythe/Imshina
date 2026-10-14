@@ -58,3 +58,10 @@ export const useGuideBookings = () => useUserQuery('guide-bookings', ['Guide'], 
 
 // Visitor numbers for admins (aggregates only).
 export const useInsights = () => useUserQuery('insights', ['Admin'], async () => (await api.get('/admin/insights')).data)
+
+// The on-site story a stamp unlocks. The server answers 403 until the traveller holds the stamp.
+export function usePlaceStory(placeId, enabled) {
+  const { user } = useAuth()
+  const ok = enabled && user?.role === 'Tourist' && placeId != null
+  return useQuery(ok ? `story:${placeId}:${user.id}` : null, async () => (await api.get(`/places/${placeId}/story`)).data)
+}

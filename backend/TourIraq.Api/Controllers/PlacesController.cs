@@ -49,6 +49,7 @@ public class PlacesController(AppDbContext db) : ControllerBase
 
         return Ok(new PlaceDetailDto
         {
+            HasStory = OnSiteStories.Has(p.Name),
             Id = p.Id,
             GovernorateId = p.GovernorateId,
             GovernorateName = p.Governorate.Name,

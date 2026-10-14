@@ -10,6 +10,7 @@ The API code added in October 2026 was written without a .NET compiler at hand. 
 - `Controllers/AdminInsightsController.cs` and the insights DTOs at the end of `DTOs/Dtos.cs`
 - `Data/DemoVenue.cs` and its call in `Program.cs`
 - `FixPlaceCoordinatesAsync` in `Data/SeedData.cs`
+- `Data/OnSiteStories.cs`, `Controllers/PlaceStoriesController.cs`, and `HasStory` on the place detail (`Controllers/PlacesController.cs`, `DTOs/Dtos.cs`)
 
 None of these change the database schema, so no migration is needed.
 
@@ -26,9 +27,12 @@ Follow [DEPLOY.md](DEPLOY.md), set up the venue demo stamp, and rehearse on the 
 **How:** pick freely licensed photos from Wikimedia Commons (search the place name; use photos of the site in Iraq, not museum pieces abroad). Set `CoverImageUrl` for each place in `Data/SeedData.cs`, or upload through the admin form. Record the author and licence of each photo in a `docs/PHOTO_CREDITS.md`, and show credits on the place page. A `PhotoCredit` column needs a migration.
 **Already done:** if a photo URL fails to load, the app falls back to the category tile.
 
-### 5. Something that unlocks only on site
-**Why:** a reason to actually go, not just a check-in.
-**How:** add `OnSiteStory` / `OnSiteStoryAr` (and optionally an audio URL) to `Place` (migration). Return them only to travellers who hold that place's stamp. Show the story on the stamp-collected screen and in the passport stamp sheet. Needs written content for 18 places; short and specific is best (one surprising fact, one thing to look for).
+### 5. On-site stories: next steps
+**Done:** each of the 18 places has a short story (a surprising fact, plus one thing to look for), in English and Arabic, taken from each site's Wikipedia article. It's shown on the stamp-collected screen, on the place page and in the passport. The API only sends it to travellers who hold that place's stamp (`GET /api/places/{id}/story`). Before the stamp, the place page shows a locked note.
+**Next:**
+- Have the texts reviewed by someone who knows each site.
+- Add audio versions.
+- Let admins write stories for new places. The stories live in code (`Data/OnSiteStories.cs`), so editing them from the admin form needs `OnSiteStory` columns (a migration).
 
 ### 6. Partner reward redemption
 **Why:** today a traveller shows a coupon code, but the partner can't verify it or mark it used. Verification is what makes partners willing to pay, which is the business model.

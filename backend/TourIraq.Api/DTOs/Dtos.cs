@@ -121,6 +121,19 @@ public class PlaceDetailDto : PlaceSummaryDto
     public string? CulturalTipsAr { get; set; }
     public List<PlaceImageDto> Images { get; set; } = new();
     public List<HistoricalEventDto> HistoricalEvents { get; set; } = new();
+    public bool HasStory { get; set; } // an on-site story unlocks with this place's stamp
+}
+
+// The story a stamp unlocks (GET /api/places/{id}/story).
+public class PlaceStoryDto
+{
+    public int PlaceId { get; set; }
+    public string Title { get; set; } = string.Empty;
+    public string Text { get; set; } = string.Empty;
+    public string LookFor { get; set; } = string.Empty;
+    public string TitleAr { get; set; } = string.Empty;
+    public string TextAr { get; set; } = string.Empty;
+    public string LookForAr { get; set; } = string.Empty;
 }
 
 public class CreateHistoricalEventForm

@@ -2,13 +2,14 @@ import { useEffect, useMemo, useState } from 'react'
 import { Link, useParams } from 'react-router-dom'
 import Icon, { CATEGORY_ICON } from '../components/Icon'
 import MapView from '../components/MapView'
+import { StoryCard, StoryTeaser } from '../components/PlaceStory'
 import { CATEGORY_TINT } from '../components/PlaceCard'
 import { ActionBar, Avatar, BackButton, ErrorState, Section, Skeleton } from '../components/ui'
 import { useAuth } from '../context/AuthContext'
 import { useGeo } from '../context/GeoContext'
 import { useToast } from '../context/ToastContext'
 import { useI18n } from '../i18n/I18nContext'
-import { useGuides, usePassport, usePlace } from '../api/hooks'
+import { useGuides, usePassport, usePlace, usePlaceStory } from '../api/hooks'
 import { distanceMeters, formatDate, formatDistance, imageUrl, placePoint, walkMinutes } from '../utils/helpers'
 
 function yearLabel(e, t) {
@@ -118,6 +119,7 @@ export default function PlacePage() {
   const [coverFailed, setCoverFailed] = useState(null) // a photo URL that didn't load; the brick tile shows instead
   const isTourist = user?.role === 'Tourist'
   const stamp = passport.data?.stamps.find((s) => String(s.placeId) === String(id))
+  const story = usePlaceStory(id, !!stamp && !!place?.hasStory)
   const placeGuides = useMemo(() => (guides.data || []).filter((g) => g.destinations.some((d) => String(d.id) === String(id))), [guides.data, id])
 
   if (error) return <div className="page"><BackButton /><ErrorState error={error} onRetry={reload} /></div>
@@ -179,6 +181,8 @@ export default function PlacePage() {
             <p style={{ fontSize: 15.5, lineHeight: 1.65, color: 'var(--ink-2)' }}>{long && !more ? `${description.slice(0, 260).trim()}…` : description}</p>
             {long && <button type="button" className="link-btn" style={{ alignSelf: 'flex-start' }} onClick={() => setMore(!more)} aria-expanded={more}>{more ? t('common.showLess') : t('common.readMore')}</button>}
           </div>
+
+          {place.hasStory && (isTourist && stamp ? <StoryCard story={story.data} loading={story.loading} /> : <StoryTeaser />)}
 
           <AudioStory place={place} />
 

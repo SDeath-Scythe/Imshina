@@ -37,6 +37,7 @@ Most travel apps help you plan a trip. Imshina rewards you for actually going. E
 **Travellers**
 - **Discover** 18 heritage sites across 4 cities, with history timelines, visiting tips, maps and a "find nearest" button.
 - **Collect stamps** in a digital passport. Each one is a photo taken on site, checked against your distance from the place.
+- **Unlock a story** at each site: a surprising fact and one thing to look for while you're standing there. The server only sends it once you hold that place's stamp.
 - **Share a stamp** as a story-sized image: the stamp, the place and "5 of 18", ready for Instagram or WhatsApp.
 - **Follow trails** such as *Old Baghdad* or *Heart of Babylon*, reach milestones, and earn a shareable certificate for stamping all 18 sites.
 - **Unlock rewards** from partner hotels, cafés and shops as the stamp count grows.
@@ -166,6 +167,7 @@ dotnet user-secrets set "Jwt:Key" "<a long random string, 32+ characters>"
 | POST | `/api/auth/register`, `/api/auth/login` | anyone |
 | GET | `/api/governorates`, `/api/governorates/{id}/places?category=` | anyone |
 | GET | `/api/places`, `/api/places/{id}` | anyone |
+| GET | `/api/places/{id}/story` | traveller holding that place's stamp |
 | GET | `/api/guides?language=&governorateId=`, `/api/guides/{id}` | anyone |
 | POST | `/api/guides/{id}/reviews` | traveller with a completed booking |
 | GET | `/api/trips` | anyone |
@@ -201,8 +203,10 @@ A guide can't be booked for dates that overlap another pending or confirmed book
 ```
 backend/TourIraq.Api/
 ├── Controllers/   Auth, Places, Governorates, Guides, GuideBookings, Bookings, Trips,
-│                  Groups, Stamps, Passport, Rewards, AdminPlaces, AdminInsights, AdminSetup
-├── Data/          AppDbContext, SeedData (18 places, guides, trips, groups, rewards), DemoVenue
+│                  Groups, Stamps, Passport, Rewards, PlaceStories, AdminPlaces,
+│                  AdminInsights, AdminSetup
+├── Data/          AppDbContext, SeedData (18 places, guides, trips, groups, rewards),
+│                  OnSiteStories, DemoVenue
 ├── DTOs/          request and response shapes (entities are never returned directly)
 ├── Migrations/    EF Core migrations
 ├── Models/        entities and enums
@@ -241,7 +245,7 @@ All design tokens are in `frontend/src/index.css`, and icons are one inline set 
 
 This is a hackathon MVP, built for the Culture & Tourism Hackathon in Iraq.
 
-- **Not compiled yet:** the newest backend code hasn't been built: the guide booking inbox, traveller cancelling, insights, the demo venue and the coordinate fix. The files are listed in [ROADMAP.md](docs/ROADMAP.md#1-build-and-test-the-backend). None of them change the database schema.
+- **Not compiled yet:** the newest backend code hasn't been built: the guide booking inbox, traveller cancelling, insights, on-site stories, the demo venue and the coordinate fix. The files are listed in [ROADMAP.md](docs/ROADMAP.md#1-build-and-test-the-backend). None of them change the database schema.
 - **Ready-made trip bookings** stay pending, because trips don't have an owner who could confirm them yet.
 - **Coordinates:** 12 of the 18 places were corrected from public sources in October 2026 (some were over a kilometre off). Six still need checking on a map; see [PLACES.md](docs/PLACES.md).
 - **No photos yet:** place cards use category colours and icons.
@@ -253,4 +257,4 @@ This is a hackathon MVP, built for the Culture & Tourism Hackathon in Iraq.
 
 ## Roadmap
 
-Next up are real photos of the places, stories that unlock only on site, reward redemption by partners (scan a QR code), and the rest of Tag along: group messages, report and block. Then notifications, offline mode and payments. Each item, with what it needs, is in **[docs/ROADMAP.md](docs/ROADMAP.md)**.
+Next up are real photos of the places, reward redemption by partners (scan a QR code), and the rest of Tag along: group messages, report and block. Then notifications, offline mode and payments. Each item, with what it needs, is in **[docs/ROADMAP.md](docs/ROADMAP.md)**.

@@ -4,16 +4,19 @@ import Icon from '../components/Icon'
 import { Seal } from '../components/Seal'
 import ShareCardSheet, { stampCard } from '../components/ShareCard'
 import { Milestones, Trails } from '../components/Journey'
+import { StoryCard } from '../components/PlaceStory'
 import { Avatar, Empty, ErrorState, Progress, Section, Segmented, Sheet, SignInPrompt, Skeleton, SkeletonRows } from '../components/ui'
 import { useAuth } from '../context/AuthContext'
 import { useI18n } from '../i18n/I18nContext'
-import { useGovernorates, usePassport, usePlaces, useRewards } from '../api/hooks'
+import { useGovernorates, usePassport, usePlaceStory, usePlaces, useRewards } from '../api/hooks'
 import { formatDate, formatDistance, govInk, imageUrl } from '../utils/helpers'
 
 const ROTATIONS = [-8, 6, -3, 9, -6, 4]
 
 function StampSheet({ stamp, place, onClose, count, total, onShare }) {
   const { t, loc } = useI18n()
+  // The place list doesn't say whether a story exists, so ask; a place without one returns 404 and shows nothing.
+  const story = usePlaceStory(stamp?.placeId, !!stamp)
   return (
     <Sheet open={!!stamp} onClose={onClose} title={place ? loc(place, 'name') : ''}>
       {stamp && (
@@ -24,6 +27,7 @@ function StampSheet({ stamp, place, onClose, count, total, onShare }) {
             <div className="stat"><span>{t('passport.collected')}</span><b style={{ fontSize: 15 }}>{formatDate(stamp.createdAt)}</b></div>
             <div className="stat"><span>{t('passport.fromSite')}</span><b style={{ fontSize: 15 }} className="num">{formatDistance(stamp.distanceMeters)}</b></div>
           </div>
+          {!story.error && <StoryCard story={story.data} loading={story.loading} compact />}
           <div className="row" style={{ '--gap': '8px' }}>
             <Link to={`/places/${stamp.placeId}`} className="btn btn-outline grow">{t('passport.openPlace')}</Link>
             {place && <button type="button" className="btn grow" onClick={() => onShare({ stamp, place, count, total })}><Icon name="share" size={18} />{t('share.short')}</button>}

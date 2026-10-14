@@ -501,3 +501,16 @@ input[type='range'] { accent-color: var(--lapis); width: 100%; }
 .practical-chev { color: var(--muted); transition: transform 160ms; }
 .practical[open] .practical-chev { transform: rotate(180deg); }
 .practical-points { margin: 0; padding-inline-start: 20px; display: flex; flex-direction: column; gap: 8px; line-height: 1.55; }
+
+/* On-site stories: a paper card with a gold edge once unlocked; a quiet dashed note before. */
+.story { display: flex; flex-direction: column; gap: 8px; padding: 16px; border-radius: var(--r-lg); background: var(--surface); border: 1px solid var(--line); border-inline-start: 4px solid var(--gold); text-align: start; }
+.story.compact { padding: 14px; }
+.story-eyebrow { display: inline-flex; align-items: center; gap: 6px; font-size: 12px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: var(--ochre); }
+[dir='rtl'] .story-eyebrow { letter-spacing: 0; }
+.story-title { font-size: 20px; line-height: 1.3; }
+.story p { margin: 0; line-height: 1.6; }
+.story-look { display: flex; gap: 10px; align-items: flex-start; padding: 10px 12px; border-radius: 14px; background: var(--paper-2); font-size: 14px; line-height: 1.55; }
+.story-look svg { flex-shrink: 0; margin-top: 2px; color: var(--lapis); }
+.story.locked { flex-direction: row; align-items: center; gap: 12px; background: transparent; border: 1.5px dashed var(--line-3); color: var(--muted); }
+.story.locked b { color: var(--ink); }
+.story-lock { width: 40px; height: 40px; flex-shrink: 0; border-radius: 20px; background: var(--paper-2); display: flex; align-items: center; justify-content: center; color: var(--ochre); }

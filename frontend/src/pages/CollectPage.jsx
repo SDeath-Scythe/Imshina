@@ -5,10 +5,11 @@ import Icon from '../components/Icon'
 import MapView from '../components/MapView'
 import { BigSeal } from '../components/Seal'
 import ShareCardSheet, { stampCard } from '../components/ShareCard'
+import { StoryCard } from '../components/PlaceStory'
 import { Skeleton } from '../components/ui'
 import { useGeo } from '../context/GeoContext'
 import { useI18n } from '../i18n/I18nContext'
-import { usePlace, usePlaces } from '../api/hooks'
+import { usePlace, usePlaceStory, usePlaces } from '../api/hooks'
 import { invalidate } from '../hooks/useQuery'
 import { distanceMeters, formatDate, formatDistance, govInk, placePoint, problem, walkMinutes } from '../utils/helpers'
 
@@ -96,6 +97,7 @@ export default function CollectPage() {
   const [result, setResult] = useState(null)
   const [failure, setFailure] = useState('')
   const [sharing, setSharing] = useState(false)
+  const story = usePlaceStory(id, phase === 'done' && !!place?.hasStory)
   const fileRef = useRef(null)
   const cam = useCamera(phase === 'camera')
   const close = () => navigate(`/places/${id}`, { replace: true })
@@ -213,6 +215,7 @@ export default function CollectPage() {
           <h1>{total ? t('collect.countOf', { n: result.totalStamps, total }) : t('collect.count', { n: result.totalStamps })}</h1>
           <p className="muted">{t('collect.distance', { d: formatDistance(result.distanceMeters) })}</p>
         </div>
+        {place.hasStory && <div style={{ width: '100%' }}><StoryCard story={story.data} loading={story.loading} /></div>}
         {result.newlyUnlockedRewards.map((r) => (
           <Link key={r.rewardId} to={`/rewards/${r.rewardId}`} className="card-dark row" style={{ width: '100%', textDecoration: 'none', textAlign: 'start', '--gap': '14px' }}>
             <span style={{ width: 52, height: 52, borderRadius: 14, background: 'var(--gold)', color: 'var(--ink)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}><Icon name="gift" size={24} /></span>
