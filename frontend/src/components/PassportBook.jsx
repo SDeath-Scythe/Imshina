@@ -4,14 +4,23 @@ import Icon from './Icon'
 import { Seal } from './Seal'
 import { useI18n } from '../i18n/I18nContext'
 import { formatDate, formatDistance, govInk, imageUrl, initials } from '../utils/helpers'
+import { playPageTurn } from '../utils/pageSound'
 
-const TURN_MS = 720
+const TURN_MS = 820 // keep in step with the turn animations in index.css
+const SOUND_KEY = 'imshina_page_sound'
+const readSound = () => { try { return localStorage.getItem(SOUND_KEY) !== 'off' } catch { return true } }
 const reducedMotion = () => typeof window !== 'undefined' && window.matchMedia?.('(prefers-reduced-motion: reduce)').matches
 
 /**
- * The passport as a notebook. The holder's page never moves; stamp pages turn like paper.
- * Phones: bound across the middle, pages flip upward like a top-bound notepad.
- * Wider screens: an open spread, pages turn sideways (from the right in Arabic).
+ * The passport as an open notebook. The holder's page never moves; stamp pages turn like paper.
+ *
+ * How a turn is drawn: a two-sided sheet swings about the middle of the spine.
+ * - Turning forward, its front is the page you're leaving and the page you're going to lies
+ *   underneath, so both are on screen at once. It lands face-down on the holder's page, and its
+ *   back is a copy of that page, so the landing matches exactly and nothing has to fade.
+ * - Turning back is the same movement in reverse: the sheet lifts off the holder's page and brings
+ *   the earlier stamp down on top of the current one.
+ * In Arabic the spread is mirrored and pages turn from the right.
  */
 export default function PassportBook({ user, stamps, places, total, cities, rewards, onOpenStamp }) {
   const { t, isRtl } = useI18n()
@@ -27,7 +36,12 @@ export default function PassportBook({ user, stamps, places, total, cities, rewa
   // Open on the newest stamp.
   const [index, setIndex] = useState(() => Math.max(0, stampCount - 1))
   const [turn, setTurn] = useState(null) // { from, to, dir: 'next' | 'prev' }
+  const [sound, setSound] = useState(readSound)
   const timer = useRef(null)
+  const toggleSound = () => setSound((on) => {
+    try { localStorage.setItem(SOUND_KEY, on ? 'off' : 'on') } catch { /* private mode */ }
+    return !on
+  })
 
   useEffect(() => { setIndex((i) => Math.min(i, pages.length - 1)) }, [pages.length])
   useEffect(() => () => clearTimeout(timer.current), [])
@@ -48,8 +62,9 @@ export default function PassportBook({ user, stamps, places, total, cities, rewa
     const tr = { from: index, to, dir: to > index ? 'next' : 'prev' }
     turnRef.current = tr
     setTurn(tr)
+    if (sound) playPageTurn(TURN_MS / 1000)
     timer.current = setTimeout(finish, TURN_MS + 150) // in case animationend never fires
-  }, [pages.length, index, finish])
+  }, [pages.length, index, finish, sound])
 
   const next = () => go(index + 1)
   const prev = () => go(index - 1)
@@ -87,7 +102,7 @@ export default function PassportBook({ user, stamps, places, total, cities, rewa
 
   return (
     <div className="book-wrap">
-      <div className="book" role="region" aria-roledescription={t('book.role')} aria-label={t('book.label')} tabIndex={0} onKeyDown={onKeyDown}>
+      <div className={`book ${turn ? `is-turning turning-${turn.dir}` : ''}`} role="region" aria-roledescription={t('book.role')} aria-label={t('book.label')} tabIndex={0} onKeyDown={onKeyDown}>
         <IdentityPage user={user} count={stampCount} total={total} cities={cities} rewards={rewards} />
         <div className="book-spine" aria-hidden="true">{Array.from({ length: 9 }, (_, i) => <span key={i} className="ring" />)}</div>
         <div className="leaf-stack" onPointerDown={onPointerDown} onPointerUp={onPointerUp} onPointerCancel={() => { start.current = null }}>
@@ -95,7 +110,7 @@ export default function PassportBook({ user, stamps, places, total, cities, rewa
           {turn && (
             <div className={`leaf turning turn-${turn.dir}`} onAnimationEnd={(e) => { if (e.target === e.currentTarget) finish() }} aria-hidden="true">
               <div className="face front">{render(turningIndex)}</div>
-              <div className="face back"><div className="leaf-page blank" /></div>
+              <div className="face back"><IdentityPage user={user} count={stampCount} total={total} cities={cities} rewards={rewards} /></div>
             </div>
           )}
         </div>
@@ -107,6 +122,9 @@ export default function PassportBook({ user, stamps, places, total, cities, rewa
           {current?.kind === 'stamp' ? t('book.pageOf', { n: current.n, total: stampCount }) : stampCount === 0 ? t('book.emptyShort') : t('book.nextShort')}
         </span>
         <button type="button" className="icon-btn" onClick={next} disabled={index >= pages.length - 1 || !!turn} aria-label={t('book.next')}><Icon name="forward" className="flip-rtl" /></button>
+        <button type="button" className="icon-btn book-sound" onClick={toggleSound} aria-pressed={sound} aria-label={sound ? t('book.soundOff') : t('book.soundOn')}>
+          <Icon name={sound ? 'volume' : 'mute'} size={18} />
+        </button>
       </div>
       {pages.length > 1 && <p className="small muted center book-hint">{t('book.hint')}</p>}
     </div>

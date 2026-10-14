@@ -530,7 +530,8 @@ input[type='range'] { accent-color: var(--lapis); width: 100%; }
 @media (max-width: 480px) { .book-wrap { margin-inline: -8px; } } /* phones: give the spread a little more width */
 .book {
   --paper: #FBF8F0; --rule: rgba(29, 58, 140, 0.09); --line-h: clamp(15px, 4.4cqi, 28px);
-  display: grid; grid-template-columns: minmax(0, 1fr) clamp(14px, 4.4cqi, 26px) minmax(0, 1fr);
+  --spine: clamp(14px, 4.4cqi, 26px);
+  display: grid; grid-template-columns: minmax(0, 1fr) var(--spine) minmax(0, 1fr);
   padding: clamp(5px, 1.6cqi, 10px); border-radius: clamp(10px, 3cqi, 18px);
   background: var(--lapis-deep); box-shadow: 0 18px 40px -18px rgba(15, 30, 74, 0.55); outline: none;
 }
@@ -574,32 +575,64 @@ input[type='range'] { accent-color: var(--lapis); width: 100%; }
   .id-photo { width: 52%; order: -1; }
 }
 
-/* Turning pages: stacked in one grid cell so the stack is as tall as the tallest page. */
-.leaf-stack { display: grid; perspective: 1800px; touch-action: pan-y; min-width: 0; }
+/* Turning pages ---------------------------------------------------------------
+   A two-sided sheet swings about the middle of the spine (--spine wide), so after half a turn it
+   lies exactly over the page on the other side. Front: the stamp page. Back: a copy of the holder's
+   page, so landing on the real one shows no seam. No fades: both pages stay visible the whole way,
+   and shadows do the rest (on the page underneath as the sheet lifts, on the holder's page as it lands). */
+.leaf-stack { display: grid; perspective: 2200px; perspective-origin: 0% 50%; touch-action: pan-y; min-width: 0; }
+[dir='rtl'] .leaf-stack { perspective-origin: 100% 50%; }
 .leaf { grid-area: 1 / 1; display: grid; min-width: 0; }
 .leaf > .leaf-page { height: 100%; }
-.leaf.turning { position: relative; z-index: 3; transform-style: preserve-3d; transform-origin: left center; animation: 720ms cubic-bezier(0.45, 0.05, 0.25, 1) both; }
-[dir='rtl'] .leaf.turning { transform-origin: right center; }
-.leaf.turning.turn-next { animation-name: turn-left; }
-.leaf.turning.turn-prev { animation-name: turn-right; }
-[dir='rtl'] .leaf.turning.turn-next { animation-name: turn-right-rtl; }
-[dir='rtl'] .leaf.turning.turn-prev { animation-name: turn-left-rtl; }
+.leaf.turning {
+  position: relative; z-index: 3; transform-style: preserve-3d; will-change: transform;
+  transform-origin: calc(var(--spine) / -2) 50%;
+  animation: 820ms cubic-bezier(0.38, 0.06, 0.22, 1) both;
+}
+[dir='rtl'] .leaf.turning { transform-origin: calc(100% + var(--spine) / 2) 50%; }
+.leaf.turning.turn-next { animation-name: sheet-over; }
+.leaf.turning.turn-prev { animation-name: sheet-back; }
+[dir='rtl'] .leaf.turning.turn-next { animation-name: sheet-over-rtl; }
+[dir='rtl'] .leaf.turning.turn-prev { animation-name: sheet-back-rtl; }
+@keyframes sheet-over { from { transform: rotateY(0deg); } to { transform: rotateY(-180deg); } }
+@keyframes sheet-back { from { transform: rotateY(-180deg); } to { transform: rotateY(0deg); } }
+@keyframes sheet-over-rtl { from { transform: rotateY(0deg); } to { transform: rotateY(180deg); } }
+@keyframes sheet-back-rtl { from { transform: rotateY(180deg); } to { transform: rotateY(0deg); } }
+
 .face { position: relative; grid-area: 1 / 1; display: grid; backface-visibility: hidden; -webkit-backface-visibility: hidden; min-width: 0; }
 .face > .leaf-page { height: 100%; }
 .face.back { transform: rotateY(180deg); }
-.face.front::after, .face.back::after { content: ''; position: absolute; inset: 0; border-radius: inherit; background: linear-gradient(to right, rgba(15, 30, 74, 0.28), transparent 70%); opacity: 0; animation: page-shade 720ms cubic-bezier(0.45, 0.05, 0.25, 1) both; pointer-events: none; }
-[dir='rtl'] .face.front::after, [dir='rtl'] .face.back::after { background: linear-gradient(to left, rgba(15, 30, 74, 0.28), transparent 70%); }
-/* Opacity lives on the faces: on the 3D parent it would flatten the page and show its front through the back. */
-.leaf.turning.turn-next > .face { animation: face-out 720ms linear both; }
-.leaf.turning.turn-prev > .face { animation: face-in 720ms linear both; }
-@keyframes face-out { 0%, 78% { opacity: 1; } 100% { opacity: 0; } }
-@keyframes face-in { 0% { opacity: 0; } 22%, 100% { opacity: 1; } }
-@keyframes page-shade { 0%, 100% { opacity: 0; } 50% { opacity: 1; } }
-@keyframes turn-left { from { transform: rotateY(0); } to { transform: rotateY(-178deg); } }
-@keyframes turn-right { from { transform: rotateY(-178deg); } to { transform: rotateY(0); } }
-@keyframes turn-right-rtl { from { transform: rotateY(0); } to { transform: rotateY(178deg); } }
-@keyframes turn-left-rtl { from { transform: rotateY(178deg); } to { transform: rotateY(0); } }
-@media (prefers-reduced-motion: reduce) { .leaf.turning, .leaf.turning > .face { animation-duration: 1ms; } }
+/* Light on the sheet: darkest when it stands upright, at the halfway point. */
+.face::after { content: ''; position: absolute; inset: 0; border-radius: clamp(6px, 1.6cqi, 10px); pointer-events: none; opacity: 0; animation: 820ms cubic-bezier(0.38, 0.06, 0.22, 1) both; }
+.face.front::after { background: linear-gradient(to right, rgba(15, 30, 74, 0.38), rgba(15, 30, 74, 0.08) 55%, transparent); }
+.face.back::after { background: linear-gradient(to left, rgba(15, 30, 74, 0.38), rgba(15, 30, 74, 0.08) 55%, transparent); }
+[dir='rtl'] .face.front::after { background: linear-gradient(to left, rgba(15, 30, 74, 0.38), rgba(15, 30, 74, 0.08) 55%, transparent); }
+[dir='rtl'] .face.back::after { background: linear-gradient(to right, rgba(15, 30, 74, 0.38), rgba(15, 30, 74, 0.08) 55%, transparent); }
+.turn-next > .face.front::after { animation-name: shade-rise; }
+.turn-next > .face.back::after { animation-name: shade-fall; }
+.turn-prev > .face.back::after { animation-name: shade-rise-late; }
+.turn-prev > .face.front::after { animation-name: shade-fall-early; }
+@keyframes shade-rise { 0% { opacity: 0; } 50% { opacity: 1; } 100% { opacity: 1; } }
+@keyframes shade-fall { 0% { opacity: 1; } 50% { opacity: 1; } 100% { opacity: 0; } }
+@keyframes shade-rise-late { 0% { opacity: 0; } 50% { opacity: 1; } 100% { opacity: 1; } }
+@keyframes shade-fall-early { 0% { opacity: 1; } 50% { opacity: 1; } 100% { opacity: 0; } }
+
+/* Shadows the sheet casts: on the page under it, and on the holder's page it lands on (or lifts off). */
+.book > .identity::after, .leaf.base > .leaf-page::after {
+  content: ''; position: absolute; inset: 0; border-radius: inherit; pointer-events: none; opacity: 0;
+  animation: 820ms cubic-bezier(0.38, 0.06, 0.22, 1) both;
+}
+.leaf.base > .leaf-page::after { background: linear-gradient(to right, rgba(15, 30, 74, 0.32), transparent 65%); }
+.book > .identity::after { background: linear-gradient(to left, rgba(15, 30, 74, 0.32), transparent 65%); }
+[dir='rtl'] .leaf.base > .leaf-page::after { background: linear-gradient(to left, rgba(15, 30, 74, 0.32), transparent 65%); }
+[dir='rtl'] .book > .identity::after { background: linear-gradient(to right, rgba(15, 30, 74, 0.32), transparent 65%); }
+.book.turning-next .leaf.base > .leaf-page::after { animation-name: cast-lift; }
+.book.turning-next > .identity::after { animation-name: cast-land; }
+.book.turning-prev > .identity::after { animation-name: cast-lift; }
+.book.turning-prev .leaf.base > .leaf-page::after { animation-name: cast-land; }
+@keyframes cast-lift { 0% { opacity: 1; } 55% { opacity: 0.25; } 100% { opacity: 0; } }
+@keyframes cast-land { 0% { opacity: 0; } 45% { opacity: 0.25; } 100% { opacity: 1; } }
+@media (prefers-reduced-motion: reduce) { .leaf.turning, .face::after, .book > .identity::after, .leaf.base > .leaf-page::after { animation-duration: 1ms; } }
 
 /* Stamp page */
 .leaf-head { display: flex; justify-content: space-between; gap: 6px; color: var(--muted); font-weight: 600; font-size: clamp(7.5px, 2cqi, 13px); }
