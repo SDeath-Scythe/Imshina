@@ -146,11 +146,15 @@ function IdentityPage({ user, count, total, cities, rewards }) {
   )
 }
 
-/** One stamp: the traveller's photo framed as a postage stamp, the name in script, a postmark, then the details. */
+// Calligraphy needs room: shrink long names so they stay inside the photo.
+const nameSize = (n) => (n.length > 22 ? 'xl' : n.length > 13 ? 'l' : '')
+
+/** One stamp: the photo the traveller took on site to verify it (never a profile photo), framed as a postage stamp, the name in script, a postmark, then the details. */
 function StampPage({ page, count, onOpen }) {
   const { t, loc, gov, isRtl } = useI18n()
   const { stamp, place, n } = page
   const name = place ? loc(place, 'name') : loc(stamp, 'placeName')
+  const stampName = name.replace(/\s*\(.*?\)/g, '') // "Ishtar Gate (Reconstruction)" → "Ishtar Gate" on the stamp
   const city = gov(place?.governorateName || stamp.governorateName)
   const ink = govInk(place?.governorateName || stamp.governorateName, place?.governorateId)
   const src = imageUrl(stamp.photoUrl)
@@ -165,7 +169,7 @@ function StampPage({ page, count, onOpen }) {
         <span className="postage">
           <span className="postage-photo" style={{ '--ink': ink }}>
             {photo ? <img src={photo} alt="" draggable="false" onError={() => setFailed(true)} /> : <Icon name="image" size={40} />}
-            <span className="postage-name" lang={isRtl ? 'ar' : 'en'}>{name}</span>
+            <span className={`postage-name ${nameSize(stampName)}`} lang={isRtl ? 'ar' : 'en'}>{stampName}</span>
           </span>
           <span className="postage-foot"><span>IRAQ · العراق</span><span className="num">№ {n}</span></span>
         </span>

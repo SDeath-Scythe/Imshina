@@ -36,7 +36,7 @@ Most travel apps help you plan a trip. Imshina rewards you for actually going. E
 
 **Travellers**
 - **Discover** 18 heritage sites across 4 cities, with history timelines, visiting tips, maps and a "find nearest" button.
-- **Collect stamps** in a passport that works like a notebook: your details stay on one page, and each stamp gets its own page that turns like paper. A stamp is your own photo framed as a postage stamp, with the place name in script and a postmark in the city's ink. Every photo is taken on site and checked against your distance from the place.
+- **Collect stamps** in a passport that works like a notebook: your details stay on one page, and each stamp gets its own page that turns like paper. A stamp is the photo you took on site to verify it, framed as a postage stamp, with the place name in calligraphy and a postmark in the city's ink. Every photo is taken on site and checked against your distance from the place.
 - **Unlock a story** at each site: a surprising fact and one thing to look for while you're standing there. The server only sends it once you hold that place's stamp.
 - **Share a stamp** as a story-sized image: the stamp, the place and "5 of 18", ready for Instagram or WhatsApp.
 - **Follow trails** such as *Old Baghdad* or *Heart of Babylon*, reach milestones, and earn a shareable certificate for stamping all 18 sites.
@@ -72,7 +72,7 @@ Most travel apps help you plan a trip. Imshina rewards you for actually going. E
 
 The passport notebook · booking a guide for two days · a guide's booking requests · the passport in Arabic
 
-On wider screens the passport opens as a spread: the holder's page stays put and stamp pages turn.
+The passport opens as a spread on every screen: the holder's page stays put and stamp pages turn.
 
 ![The passport as an open notebook on a wide screen](docs/screenshots/passport-desktop.png)
 
@@ -239,6 +239,7 @@ docs/
 - **Phone first.** People use it standing at a site with a phone in one hand. A bottom tab bar on phones becomes a side rail on wide screens (960 px and up). Tabs change with the account type.
 - **Colours** come from the Ishtar Gate's glazed bricks: lapis blue and gold on a warm paper background. Each city has its own stamp ink.
 - **Type:** Reem Kufi for headings and IBM Plex Sans Arabic for text. Both cover Arabic and Latin script.
+- **Stamp lettering:** Symphonie Calligraphy for Latin names and Aref Ruqaa for Arabic. Symphonie's demo licence doesn't allow publishing the file, so it isn't in the repo; see [frontend/public/fonts/README.md](frontend/public/fonts/README.md). Without it, the app falls back to Great Vibes.
 - **Arabic** is a full translation, not an afterthought. The layout mirrors properly, and English names inside Arabic sentences are isolated so the word order stays correct.
 - **Fast going back:** a small stale-while-revalidate cache shows the last data instantly and refreshes quietly.
 - **Every state is designed:** loading skeletons, empty lists, no connection, location off, too far from the site and already stamped all have their own screens.

@@ -22,3 +22,9 @@ dist/
 # OS / editors
 .DS_Store
 Thumbs.db
+
+# Licensed fonts: the stamp lettering font isn't redistributable (see frontend/public/fonts/README.md)
+frontend/public/fonts/*.otf
+frontend/public/fonts/*.ttf
+frontend/public/fonts/*.woff
+frontend/public/fonts/*.woff2

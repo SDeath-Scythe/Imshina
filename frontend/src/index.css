@@ -516,146 +516,125 @@ input[type='range'] { accent-color: var(--lapis); width: 100%; }
 .story-lock { width: 40px; height: 40px; flex-shrink: 0; border-radius: 20px; background: var(--paper-2); display: flex; align-items: center; justify-content: center; color: var(--ochre); }
 
 /* ===================== Passport notebook =====================
-   A lapis cover behind cream ruled pages. The holder's page is fixed; stamp pages turn.
-   Phones: pages stacked, bound across the middle, flipping upward (rotateX about the top edge).
-   ≥760px: an open spread bound down the middle, turning sideways (rotateY), mirrored in Arabic. */
-.book-wrap { display: flex; flex-direction: column; gap: 10px; }
+   An open spread at every screen size: the holder's page on one side (fixed), stamp pages on the
+   other, turning about the spine (from the right in Arabic). Sizes follow the book's own width
+   (cqi = 1% of .book-wrap), so a 390px phone and a desktop show the same spread, just scaled. */
+@font-face {
+  /* The stamp lettering. The demo licence forbids publishing the file, so it isn't in the repo:
+     see frontend/public/fonts/README.md. Without it, Great Vibes is used. */
+  font-family: 'Symphonie';
+  src: url('/fonts/SymphonieCalligraphyDEMO-Regular.otf') format('opentype');
+  font-display: swap;
+}
+.book-wrap { display: flex; flex-direction: column; gap: 10px; container-type: inline-size; }
+@media (max-width: 480px) { .book-wrap { margin-inline: -8px; } } /* phones: give the spread a little more width */
 .book {
-  --paper: #FBF8F0; --rule: rgba(29, 58, 140, 0.09); --margin: rgba(178, 64, 50, 0.22);
-  display: grid; grid-template-rows: auto 26px auto; padding: 10px; border-radius: 18px;
-  background: var(--lapis-deep); box-shadow: 0 18px 40px -18px rgba(15, 30, 74, 0.55);
-  outline: none;
+  --paper: #FBF8F0; --rule: rgba(29, 58, 140, 0.09); --line-h: clamp(15px, 4.4cqi, 28px);
+  display: grid; grid-template-columns: minmax(0, 1fr) clamp(14px, 4.4cqi, 26px) minmax(0, 1fr);
+  padding: clamp(5px, 1.6cqi, 10px); border-radius: clamp(10px, 3cqi, 18px);
+  background: var(--lapis-deep); box-shadow: 0 18px 40px -18px rgba(15, 30, 74, 0.55); outline: none;
 }
 .book:focus-visible { box-shadow: 0 0 0 3px var(--gold), 0 18px 40px -18px rgba(15, 30, 74, 0.55); }
 .leaf-page {
-  position: relative; display: flex; flex-direction: column; gap: 12px; padding: 16px 18px 18px;
-  background-color: var(--paper);
-  background-image: linear-gradient(transparent 27px, var(--rule) 27px, var(--rule) 28px);
-  background-size: 100% 28px; background-position: 0 12px;
-  border-radius: 10px; color: var(--ink); min-width: 0;
+  position: relative; display: flex; flex-direction: column; gap: clamp(5px, 1.7cqi, 12px);
+  padding: clamp(8px, 2.6cqi, 18px); background-color: var(--paper);
+  background-image: linear-gradient(transparent calc(100% - 1px), var(--rule) calc(100% - 1px));
+  background-size: 100% var(--line-h); border-radius: clamp(6px, 1.6cqi, 10px); color: var(--ink); min-width: 0;
 }
 .leaf-page.blank { height: 100%; }
 
-/* Spiral: rings crossing the binding, like the sketch's notepad. */
-.book-spine { display: flex; justify-content: space-around; align-items: center; padding-inline: 6px; }
-.ring { width: 9px; height: 34px; border-radius: 6px; background: linear-gradient(90deg, #2A2F45, #8D93A8 45%, #2A2F45); box-shadow: 0 2px 3px rgba(0,0,0,.35); }
+/* Spiral rings down the spine */
+.book-spine { display: flex; flex-direction: column; justify-content: space-around; align-items: center; padding: 8px 0; }
+.ring { width: clamp(18px, 5.4cqi, 34px); height: clamp(5px, 1.4cqi, 9px); border-radius: 6px; background: linear-gradient(180deg, #2A2F45, #8D93A8 45%, #2A2F45); box-shadow: 0 2px 3px rgba(0, 0, 0, 0.35); }
 
 /* Holder's page */
-.identity { gap: 10px; }
-.id-head { display: flex; justify-content: space-between; align-items: baseline; gap: 10px; }
-.id-eyebrow { font-size: 11px; font-weight: 700; letter-spacing: 0.12em; color: var(--ochre); }
+.id-head { display: flex; justify-content: space-between; align-items: baseline; gap: 6px; flex-wrap: wrap; }
+.id-eyebrow { font-size: clamp(7px, 1.8cqi, 11px); font-weight: 700; letter-spacing: 0.1em; color: var(--ochre); text-transform: uppercase; }
 [dir='rtl'] .id-eyebrow { letter-spacing: 0; }
-.id-title { font-family: 'Reem Kufi', 'IBM Plex Sans Arabic', sans-serif; font-weight: 700; font-size: 22px; color: var(--lapis); }
-.id-body { display: grid; grid-template-columns: minmax(0, 1fr) 104px; gap: 14px; align-items: start; }
-.id-fields { margin: 0; display: flex; flex-direction: column; gap: 6px; }
-.id-fields dt { font-size: 10.5px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: var(--muted); }
+.id-title { font-family: 'Reem Kufi', 'IBM Plex Sans Arabic', sans-serif; font-weight: 700; font-size: clamp(12px, 3.6cqi, 22px); color: var(--lapis); line-height: 1.3; }
+.id-body { display: grid; grid-template-columns: minmax(0, 1fr) 34%; gap: clamp(6px, 2cqi, 14px); align-items: start; }
+.id-fields { margin: 0; display: flex; flex-direction: column; gap: clamp(2px, 0.9cqi, 6px); }
+.id-fields dt { font-size: clamp(6.5px, 1.7cqi, 10.5px); font-weight: 600; letter-spacing: 0.05em; text-transform: uppercase; color: var(--muted); }
 [dir='rtl'] .id-fields dt { letter-spacing: 0; }
-.id-fields dd { margin: 0; font-weight: 600; font-size: 15px; overflow-wrap: anywhere; }
-.id-stats { display: flex; gap: 14px; margin-top: 4px; }
-.id-stats span { display: flex; flex-direction: column; font-size: 11.5px; color: var(--muted); }
-.id-stats b { font-size: 19px; color: var(--ink); line-height: 1.2; }
-.id-stats small { font-size: 12px; color: var(--muted); }
-.id-photo { aspect-ratio: 1; border: 6px solid #fff; box-shadow: 0 2px 6px rgba(20, 24, 43, 0.18); background: var(--lapis-soft); display: flex; align-items: center; justify-content: center; transform: rotate(2deg); overflow: hidden; }
+.id-fields dd { margin: 0; font-weight: 600; font-size: clamp(9.5px, 2.7cqi, 15px); overflow-wrap: anywhere; line-height: 1.3; }
+.id-stats { display: flex; gap: clamp(6px, 2.2cqi, 14px); margin-top: 2px; flex-wrap: wrap; }
+.id-stats span { display: flex; flex-direction: column; font-size: clamp(7px, 1.9cqi, 11.5px); color: var(--muted); }
+.id-stats b { font-size: clamp(12px, 3.3cqi, 19px); color: var(--ink); line-height: 1.2; }
+.id-stats small { font-size: 0.65em; color: var(--muted); }
+.id-photo { aspect-ratio: 1; border: clamp(3px, 1cqi, 6px) solid #fff; box-shadow: 0 2px 6px rgba(20, 24, 43, 0.18); background: var(--lapis-soft); display: flex; align-items: center; justify-content: center; transform: rotate(2deg); overflow: hidden; }
 .id-photo img { width: 100%; height: 100%; object-fit: cover; }
-.id-photo span { font-size: 34px; color: var(--lapis); }
+.id-photo span { font-size: clamp(14px, 5cqi, 34px); color: var(--lapis); }
+.id-signature { display: flex; margin-top: auto; flex-direction: column; align-items: flex-start; gap: 2px; padding-top: 8px; }
+.id-sign { font-family: 'Symphonie', 'Great Vibes', 'Aref Ruqaa', cursive; font-size: clamp(17px, 5.4cqi, 36px); color: var(--lapis); line-height: 1.25; border-bottom: 1.5px solid var(--ink); padding: 0 clamp(8px, 3cqi, 24px) 2px 4px; transform: rotate(-2deg); max-width: 100%; overflow: hidden; white-space: nowrap; }
+.id-sign-label { font-size: clamp(6.5px, 1.7cqi, 10.5px); font-weight: 600; letter-spacing: 0.05em; text-transform: uppercase; color: var(--muted); }
+[dir='rtl'] .id-sign-label { letter-spacing: 0; }
+/* Narrow books: photo above the details, as in a printed passport. */
+@container (max-width: 560px) {
+  .id-body { grid-template-columns: 1fr; }
+  .id-photo { width: 52%; order: -1; }
+}
 
 /* Turning pages: stacked in one grid cell so the stack is as tall as the tallest page. */
-.leaf-stack { display: grid; perspective: 1800px; touch-action: pan-y; }
+.leaf-stack { display: grid; perspective: 1800px; touch-action: pan-y; min-width: 0; }
 .leaf { grid-area: 1 / 1; display: grid; min-width: 0; }
 .leaf > .leaf-page { height: 100%; }
-.leaf.turning { position: relative; z-index: 3; transform-style: preserve-3d; transform-origin: top center; animation: 720ms cubic-bezier(0.45, 0.05, 0.25, 1) both; }
-.leaf.turning.turn-next { animation-name: flip-up; }
-.leaf.turning.turn-prev { animation-name: flip-down; }
-.face { grid-area: 1 / 1; display: grid; backface-visibility: hidden; -webkit-backface-visibility: hidden; min-width: 0; }
+.leaf.turning { position: relative; z-index: 3; transform-style: preserve-3d; transform-origin: left center; animation: 720ms cubic-bezier(0.45, 0.05, 0.25, 1) both; }
+[dir='rtl'] .leaf.turning { transform-origin: right center; }
+.leaf.turning.turn-next { animation-name: turn-left; }
+.leaf.turning.turn-prev { animation-name: turn-right; }
+[dir='rtl'] .leaf.turning.turn-next { animation-name: turn-right-rtl; }
+[dir='rtl'] .leaf.turning.turn-prev { animation-name: turn-left-rtl; }
+.face { position: relative; grid-area: 1 / 1; display: grid; backface-visibility: hidden; -webkit-backface-visibility: hidden; min-width: 0; }
 .face > .leaf-page { height: 100%; }
-.face.back { transform: rotateX(180deg); }
-.face { position: relative; }
-.face.front::after, .face.back::after { content: ''; position: absolute; inset: 0; border-radius: 10px; background: linear-gradient(to bottom, rgba(15, 30, 74, 0.28), transparent 70%); opacity: 0; animation: page-shade 720ms cubic-bezier(0.45, 0.05, 0.25, 1) both; pointer-events: none; }
+.face.back { transform: rotateY(180deg); }
+.face.front::after, .face.back::after { content: ''; position: absolute; inset: 0; border-radius: inherit; background: linear-gradient(to right, rgba(15, 30, 74, 0.28), transparent 70%); opacity: 0; animation: page-shade 720ms cubic-bezier(0.45, 0.05, 0.25, 1) both; pointer-events: none; }
+[dir='rtl'] .face.front::after, [dir='rtl'] .face.back::after { background: linear-gradient(to left, rgba(15, 30, 74, 0.28), transparent 70%); }
 /* Opacity lives on the faces: on the 3D parent it would flatten the page and show its front through the back. */
-@keyframes flip-up { from { transform: rotateX(0); } to { transform: rotateX(178deg); } }
-@keyframes flip-down { from { transform: rotateX(178deg); } to { transform: rotateX(0); } }
 .leaf.turning.turn-next > .face { animation: face-out 720ms linear both; }
 .leaf.turning.turn-prev > .face { animation: face-in 720ms linear both; }
 @keyframes face-out { 0%, 78% { opacity: 1; } 100% { opacity: 0; } }
 @keyframes face-in { 0% { opacity: 0; } 22%, 100% { opacity: 1; } }
 @keyframes page-shade { 0%, 100% { opacity: 0; } 50% { opacity: 1; } }
-
-@media (min-width: 760px) {
-  .book { grid-template-rows: auto; grid-template-columns: minmax(0, 1fr) 26px minmax(0, 1.15fr); }
-  .book-spine { flex-direction: column; padding: 10px 0; }
-  .ring { width: 34px; height: 9px; background: linear-gradient(180deg, #2A2F45, #8D93A8 45%, #2A2F45); }
-  .identity { justify-content: flex-start; }
-  .leaf.turning { transform-origin: left center; }
-  [dir='rtl'] .leaf.turning { transform-origin: right center; }
-  .leaf.turning.turn-next { animation-name: turn-left; }
-  .leaf.turning.turn-prev { animation-name: turn-right; }
-  [dir='rtl'] .leaf.turning.turn-next { animation-name: turn-right-rtl; }
-  [dir='rtl'] .leaf.turning.turn-prev { animation-name: turn-left-rtl; }
-  .face.back { transform: rotateY(180deg); }
-  .face.front::after, .face.back::after { background: linear-gradient(to right, rgba(15, 30, 74, 0.28), transparent 70%); }
-  [dir='rtl'] .face.front::after, [dir='rtl'] .face.back::after { background: linear-gradient(to left, rgba(15, 30, 74, 0.28), transparent 70%); }
-}
 @keyframes turn-left { from { transform: rotateY(0); } to { transform: rotateY(-178deg); } }
 @keyframes turn-right { from { transform: rotateY(-178deg); } to { transform: rotateY(0); } }
 @keyframes turn-right-rtl { from { transform: rotateY(0); } to { transform: rotateY(178deg); } }
 @keyframes turn-left-rtl { from { transform: rotateY(178deg); } to { transform: rotateY(0); } }
-@media (prefers-reduced-motion: reduce) { .leaf.turning { animation-duration: 1ms; } }
+@media (prefers-reduced-motion: reduce) { .leaf.turning, .leaf.turning > .face { animation-duration: 1ms; } }
 
 /* Stamp page */
-.stamp-page { align-items: stretch; }
-.leaf-head { display: flex; justify-content: space-between; color: var(--muted); font-weight: 600; }
-.postage-wrap { position: relative; display: block; align-self: center; width: min(76%, 290px); margin: 6px 0 4px; padding: 0; border: 0; background: none; cursor: pointer; filter: drop-shadow(0 6px 10px rgba(20, 24, 43, 0.2)); transform: rotate(-1.5deg); }
+.leaf-head { display: flex; justify-content: space-between; gap: 6px; color: var(--muted); font-weight: 600; font-size: clamp(7.5px, 2cqi, 13px); }
+.postage-wrap { position: relative; display: block; align-self: center; width: min(88%, 300px); margin: clamp(4px, 1.4cqi, 8px) 0 2px; padding: 0; border: 0; background: none; cursor: pointer; filter: drop-shadow(0 4px 8px rgba(20, 24, 43, 0.2)); transform: rotate(-1.5deg); }
 .postage-wrap:focus-visible { outline: 3px solid var(--lapis); outline-offset: 6px; border-radius: 4px; }
 /* Perforated edge: semicircle bites along all four sides, solid inside (two mask layers, unioned). */
 .postage {
-  display: block; padding: 8px; background: #FFFDF7;
-  -webkit-mask: linear-gradient(#000 0 0) content-box, radial-gradient(circle, #0000 4.4px, #000 5px) -7px -7px / 14px 14px round;
-  mask: linear-gradient(#000 0 0) content-box, radial-gradient(circle, #0000 4.4px, #000 5px) -7px -7px / 14px 14px round;
+  display: block; padding: 6px; background: #FFFDF7;
+  -webkit-mask: linear-gradient(#000 0 0) content-box, radial-gradient(circle, #0000 3.6px, #000 4.2px) -6px -6px / 12px 12px round;
+  mask: linear-gradient(#000 0 0) content-box, radial-gradient(circle, #0000 3.6px, #000 4.2px) -6px -6px / 12px 12px round;
 }
-.postage-photo { position: relative; display: flex; align-items: center; justify-content: center; aspect-ratio: 4 / 5; overflow: hidden; background: var(--ink); color: rgba(255, 255, 255, 0.5); margin: 10px 10px 0; }
+.postage-photo { position: relative; display: flex; align-items: center; justify-content: center; aspect-ratio: 4 / 5; overflow: hidden; background: var(--ink); color: rgba(255, 255, 255, 0.5); margin: clamp(4px, 1.4cqi, 10px) clamp(4px, 1.4cqi, 10px) 0; }
 .postage-photo img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
-.postage-photo::after { content: ''; position: absolute; inset: 0; background: radial-gradient(ellipse at center, rgba(10, 14, 30, 0.45), rgba(10, 14, 30, 0.1) 70%); }
+.postage-photo::after { content: ''; position: absolute; inset: 0; background: radial-gradient(ellipse at center, rgba(10, 14, 30, 0.45), rgba(10, 14, 30, 0.08) 75%); }
+/* The place name across the traveller's own photo, in calligraphy. */
 .postage-name {
-  position: absolute; inset: 0; z-index: 1; display: flex; align-items: center; justify-content: center; padding: 0 12px; text-align: center;
-  font-family: 'Great Vibes', 'Aref Ruqaa', cursive; font-size: clamp(30px, 9vw, 42px); line-height: 1.05; color: #fff;
-  text-shadow: 0 2px 12px rgba(0, 0, 0, 0.6), 0 0 2px rgba(0, 0, 0, 0.4);
+  position: absolute; inset: 0; z-index: 1; display: flex; align-items: center; justify-content: center; padding: 0 6%; text-align: center;
+  font-family: 'Symphonie', 'Great Vibes', cursive; font-weight: 400; font-size: clamp(20px, 7cqi, 46px); line-height: 1.15; color: #FFFDF2;
+  text-shadow: 0 2px 10px rgba(0, 0, 0, 0.55), 0 0 2px rgba(0, 0, 0, 0.35);
 }
-.postage-name:lang(ar) { font-family: 'Aref Ruqaa', 'Reem Kufi', serif; font-weight: 700; font-size: clamp(28px, 8vw, 38px); line-height: 1.4; }
-.postage-foot { display: flex; justify-content: space-between; padding: 7px 12px 10px; font-size: 10.5px; font-weight: 700; letter-spacing: 0.08em; color: var(--ink); }
-.postmark { position: absolute; top: -26px; inset-inline-end: -30px; display: flex; align-items: center; mix-blend-mode: multiply; opacity: 0.85; pointer-events: none; }
-.cancel-lines { width: 64px; height: 22px; margin-inline-end: -10px; opacity: 0.8; }
+.postage-name.l { font-size: clamp(17px, 5.9cqi, 38px); }
+.postage-name.xl { font-size: clamp(14px, 4.7cqi, 31px); }
+.postage-name:lang(ar) { font-family: 'Aref Ruqaa', 'Reem Kufi', serif; font-weight: 700; font-size: clamp(16px, 5.2cqi, 38px); line-height: 1.45; }
+.postage-foot { display: flex; justify-content: space-between; gap: 4px; padding: clamp(4px, 1.1cqi, 7px) clamp(5px, 1.8cqi, 12px) clamp(5px, 1.5cqi, 10px); font-size: clamp(5.5px, 1.5cqi, 10.5px); font-weight: 700; letter-spacing: 0.06em; color: var(--ink); white-space: nowrap; }
+.postmark { position: absolute; top: calc(-1 * clamp(10px, 3.4cqi, 26px)); inset-inline-end: calc(-1 * clamp(14px, 4.4cqi, 32px)); display: flex; align-items: center; mix-blend-mode: multiply; opacity: 0.85; pointer-events: none; }
+.postmark svg:last-child { width: clamp(46px, 13cqi, 92px); height: clamp(46px, 13cqi, 92px); }
+.cancel-lines { width: clamp(28px, 8.5cqi, 64px); height: auto; aspect-ratio: 3; margin-inline-end: -8px; opacity: 0.8; }
 [dir='rtl'] .cancel-lines { transform: scaleX(-1); }
-.stamp-info { display: flex; flex-direction: column; gap: 3px; text-align: center; align-items: center; }
-.stamp-info-name { font-size: 17px; }
-.stamp-info p { margin: 2px 0 0; color: var(--ink-2, var(--ink)); max-width: 40ch; }
+.stamp-info { display: flex; flex-direction: column; gap: 2px; text-align: center; align-items: center; }
+.stamp-info-name { font-size: clamp(10.5px, 2.9cqi, 17px); line-height: 1.3; }
+.stamp-info .muted { font-size: clamp(8px, 2.1cqi, 13px); }
+.stamp-info p { margin: 2px 0 0; font-size: clamp(8px, 2.1cqi, 13px); max-width: 40ch; }
+@container (max-width: 560px) { .stamp-info p { display: none; } }
 .next-page { justify-content: center; }
-.postage-empty { align-self: center; width: min(70%, 260px); aspect-ratio: 4 / 5; border: 2.5px dashed var(--line-3); border-radius: 6px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 12px; padding: 18px; text-align: center; color: var(--muted); transform: rotate(-1.5deg); }
+.postage-empty { align-self: center; width: min(82%, 260px); aspect-ratio: 4 / 5; border: 2px dashed var(--line-3); border-radius: 6px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px; padding: 10%; text-align: center; color: var(--muted); font-size: clamp(8.5px, 2.3cqi, 14px); transform: rotate(-1.5deg); }
 .book-controls { display: flex; align-items: center; justify-content: center; gap: 16px; }
 .book-controls .icon-btn:disabled { opacity: 0.35; }
 .book-hint { margin: -4px 0 0; }
-
-/* Holder's signature: fills the left page on wide screens; hidden on phones to keep the book short. */
-.id-signature { display: none; margin-top: auto; flex-direction: column; align-items: flex-start; gap: 2px; padding-top: 18px; }
-.id-sign { font-family: 'Great Vibes', 'Aref Ruqaa', cursive; font-size: 34px; color: var(--lapis); line-height: 1.2; border-bottom: 1.5px solid var(--ink); padding: 0 24px 2px 4px; transform: rotate(-2deg); }
-.id-sign-label { font-size: 10.5px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: var(--muted); }
-[dir='rtl'] .id-sign-label { letter-spacing: 0; }
-@media (min-width: 760px) { .id-signature { display: flex; } }
-
-/* Phones: keep the whole book on one screen. */
-@media (max-width: 759px) {
-  .book { padding: 8px; grid-template-rows: auto 22px auto; }
-  .identity { padding: 12px 14px 14px; gap: 6px; }
-  .id-body { grid-template-columns: minmax(0, 1fr) 84px; gap: 10px; }
-  .id-title { font-size: 19px; }
-  .id-fields { gap: 3px; }
-  .id-fields dd { font-size: 14px; }
-  .id-stats b { font-size: 17px; }
-  .id-photo { border-width: 5px; }
-  .id-photo span { font-size: 28px; }
-  .ring { height: 28px; }
-  .stamp-page { padding: 12px 14px 14px; gap: 8px; }
-  .postage-wrap { width: min(62%, 240px); margin: 10px 0 2px; }
-  .postmark { top: -20px; inset-inline-end: -40px; }
-  .postmark svg:last-child { width: 78px; height: 78px; }
-  .stamp-info p { display: none; }
-}
