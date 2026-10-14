@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import { useAuth } from '../context/AuthContext'
-import { useBookings, useGroups, useGuideBookings, useRewards } from '../api/hooks'
+import { useBookings, useGroups, useGuideBookings, useRewards, useTripBookings } from '../api/hooks'
 import { todayISO } from '../utils/helpers'
 
 const SEEN_KEY = 'imshina_seen_updates'
@@ -18,6 +18,7 @@ export default function useUpdates() {
   const bookings = useBookings()
   const groups = useGroups()
   const guideBookings = useGuideBookings()
+  const tripBookings = useTripBookings()
   const [seen, setSeen] = useState(readSeen)
 
   const items = useMemo(() => {
@@ -39,12 +40,17 @@ export default function useUpdates() {
         if (b.status === 'Pending') out.push({ id: `request-${b.id}`, kind: 'request', to: '/guide/bookings', booking: b })
       }
     }
+    if (user.role === 'Admin') {
+      for (const b of tripBookings.data || []) {
+        if (b.status === 'Pending') out.push({ id: `trip-request-${b.id}`, kind: 'request', to: '/admin/bookings', booking: b })
+      }
+    }
     for (const g of groups.data || []) {
       if (g.myStatus === 'Approved') out.push({ id: `approved-${g.id}`, kind: 'approved', to: `/groups/${g.id}`, group: g })
       if (g.myStatus === 'Rejected') out.push({ id: `rejected-${g.id}`, kind: 'rejected', to: `/groups/${g.id}`, group: g })
     }
     return out.map((x) => ({ ...x, unread: !seen.has(x.id) }))
-  }, [user, tourist, rewards.data, bookings.data, groups.data, guideBookings.data, seen])
+  }, [user, tourist, rewards.data, bookings.data, groups.data, guideBookings.data, tripBookings.data, seen])
 
   // Other mounted copies of this hook (the bell, the desktop rail) re-read when updates are marked seen.
   useEffect(() => {
@@ -64,6 +70,6 @@ export default function useUpdates() {
     items,
     unread: items.filter((x) => x.unread).length,
     markAllRead,
-    loading: rewards.loading || bookings.loading || groups.loading || guideBookings.loading,
+    loading: rewards.loading || bookings.loading || groups.loading || guideBookings.loading || tripBookings.loading,
   }
 }

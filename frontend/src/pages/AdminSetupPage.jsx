@@ -9,7 +9,7 @@ import { useAdminSetupStatus } from '../api/hooks'
 
 export default function AdminSetupPage() {
   const { t, te } = useI18n()
-  const { login } = useAuth()
+  const { login, user } = useAuth()
   const navigate = useNavigate()
   const status = useAdminSetupStatus()
   const [f, setF] = useState({ setupToken: '', fullName: '', email: '', password: '', confirm: '' })
@@ -50,7 +50,7 @@ export default function AdminSetupPage() {
 
         <section className="card" style={{ flex: '999 1 420px', padding: 28, minWidth: 0 }}>
           {status.loading ? <Skeleton h={300} /> : status.error ? <ErrorState error={status.error} onRetry={status.reload} /> : !status.data?.available ? (
-            <Empty icon="lock" title={t('admin.closedTitle')} action={<Link to="/login" className="btn btn-sm">{t('auth.login')}</Link>}>{t('admin.closedText')}</Empty>
+            <Empty icon="lock" title={t('admin.closedTitle')} action={user ? null : <Link to="/login" className="btn btn-sm">{t('auth.login')}</Link>}>{t('admin.closedText')}</Empty>
           ) : (
             <form className="form" onSubmit={submit} style={{ maxWidth: 480 }}>
               <h2>{t('admin.create')}</h2>

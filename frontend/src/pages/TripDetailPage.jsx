@@ -39,7 +39,7 @@ function BookTripSheet({ trip, open, onClose }) {
         </>
       ) : (
         <>
-          <span className="small muted">{t('trips.pickStart', { n: trip.durationDays })}</span>
+          <span className="small muted">{t('trips.pickStart', { days: t('common.days', { n: trip.durationDays }) })}</span>
           <RangeCalendar single value={{ start: range.start, end }} onChange={(v) => { setRange({ start: v.start, end: null }); setError('') }} />
           {error && <Notice tone="error">{error}</Notice>}
           <div className="row-between">

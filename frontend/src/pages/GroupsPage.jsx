@@ -18,6 +18,7 @@ export function eligibility(group, user) {
   if (group.creatorId === user.id) return 'host'
   if (user.role !== 'Tourist') return 'role'
   if (group.myStatus) return group.myStatus.toLowerCase()
+  if (group.startDate < todayISO()) return 'past'
   if ((group.genderType === 'WomenOnly' && user.gender !== 'Female') || (group.genderType === 'MenOnly' && user.gender !== 'Male')) return 'gender'
   if (group.membersCount >= group.maxMembers) return 'full'
   return 'open'
@@ -53,6 +54,7 @@ export function GroupStatus({ group, compact }) {
     case 'rejected': return <span className="notice error" style={{ padding: '10px 14px' }}>{t('groups.rejected')}</span>
     case 'gender': return <span className="small muted center" style={{ padding: '10px 0' }}>{t('groups.notOpen', { type: gender })}</span>
     case 'full': return <span className="small muted center" style={{ padding: '10px 0' }}>{t('groups.full')}</span>
+    case 'past': return <span className="small muted center" style={{ padding: '10px 0' }}>{t('groups.past')}</span>
     case 'role': return compact ? null : <span className="small muted">{t('groups.travellersOnly')}</span>
     default: return (
       <button type="button" className="btn" onClick={(e) => { e.preventDefault(); join(group) }} disabled={busy === group.id}>

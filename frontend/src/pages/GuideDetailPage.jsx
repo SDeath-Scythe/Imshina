@@ -50,7 +50,7 @@ export default function GuideDetailPage() {
       </header>
 
       <div className="page">
-        {isMe && <Notice tone="info" icon="eye">{t('guide.yourProfile')}</Notice>}
+        {isMe && <Notice tone="info" icon="eye">{t('guide.yourProfile')} <Link to="/guide/profile">{t('guideEdit.title')}</Link></Notice>}
 
         <Section title={t('guide.about', { name: g.fullName.split(' ')[0] })}>
           <p style={{ fontSize: 15.5, lineHeight: 1.65, color: 'var(--ink-2)' }}>{g.bio || t('guide.noBio')}</p>
@@ -64,7 +64,7 @@ export default function GuideDetailPage() {
             <div className="row wrap" style={{ '--gap': '8px' }}>
               {g.destinations.map((d) => (
                 <Link key={d.id} to={`/places/${d.id}`} className="chip" style={stamped.has(d.id) ? { borderColor: '#9CC5AE' } : undefined}>
-                  {stamped.has(d.id) && <Icon name="check" size={14} stroke={2.8} style={{ color: 'var(--green)' }} />}{d.name}
+                  {stamped.has(d.id) && <Icon name="check" size={14} stroke={2.8} style={{ color: 'var(--green)' }} />}{loc(d, 'name')}
                 </Link>
               ))}
             </div>
@@ -72,11 +72,9 @@ export default function GuideDetailPage() {
           </Section>
         )}
 
-        {g.bookingInfo && (
-          <Section title={t('guide.howBooking')}>
-            <p className="card card-pad small" style={{ color: 'var(--ink-2)', lineHeight: 1.6 }}>{g.bookingInfo}</p>
-          </Section>
-        )}
+        <Section title={t('guide.howBooking')}>
+          <p className="card card-pad small" style={{ color: 'var(--ink-2)', lineHeight: 1.6 }}>{t('guide.howBookingText', { name: g.fullName.split(' ')[0], price: formatPrice(g.pricePerDay) })}</p>
+        </Section>
 
         <Section title={t('guide.reviews')}>
           {reviewable && (
@@ -104,6 +102,11 @@ export default function GuideDetailPage() {
         )}
       </div>
 
+      {isMe && (
+        <ActionBar>
+          <Link to="/guide/profile" className="btn btn-lg grow"><Icon name="edit" size={18} />{t('guideEdit.title')}</Link>
+        </ActionBar>
+      )}
       {!isMe && (
         <ActionBar>
           <span className="stack" style={{ '--gap': '0px' }}><b className="num" style={{ fontSize: 18 }}>{formatPrice(g.pricePerDay)}</b><span className="xsmall muted">{t('guides.perDay')}</span></span>

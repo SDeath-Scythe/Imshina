@@ -50,13 +50,14 @@ Most travel apps help you plan a trip. Imshina rewards you for actually going. E
 
 **Guides**
 - A **Bookings** inbox: accept or decline requests, cancel before a tour starts, and mark tours completed so travellers can review them.
-- A public profile with languages, cities, price per day and reviews.
+- A public profile with languages, cities, price per day and reviews, which guides edit themselves: bio, price, languages and the places they guide at.
 
 **Agencies** host travel groups.
 
 **Admins and tourism authorities**
 - **Insights:** stamps per site and city, where travellers come from, stamps per day and the busiest days of the week. Totals only; no traveller's name, email or photo is shown.
 - Add new places, with the stamp zone picked on a map or set from where you're standing.
+- A **Trip bookings** inbox: the Imshina team runs the ready-made trips, so admins accept, decline and complete trip bookings with the same rules guides have.
 
 ## How a stamp is verified
 
@@ -173,6 +174,7 @@ dotnet user-secrets set "Jwt:Key" "<a long random string, 32+ characters>"
 | GET | `/api/places`, `/api/places/{id}` | anyone |
 | GET | `/api/places/{id}/story` | traveller holding that place's stamp |
 | GET | `/api/guides?language=&governorateId=`, `/api/guides/{id}` | anyone |
+| PUT | `/api/guides/me` (bio, price, languages, places) | guide (own profile) |
 | POST | `/api/guides/{id}/reviews` | traveller with a completed booking |
 | GET | `/api/trips` | anyone |
 | GET / POST | `/api/trips/mine`, `/api/trips/custom` | traveller |
@@ -187,6 +189,7 @@ dotnet user-secrets set "Jwt:Key" "<a long random string, 32+ characters>"
 | GET / POST | `/api/admin-setup/status`, `/api/admin-setup` | first admin only |
 | POST | `/api/admin/places` | admin |
 | GET | `/api/admin/insights` | admin (totals only) |
+| GET / PUT | `/api/admin/trip-bookings`, `/api/admin/trip-bookings/{id}/status` | admin |
 
 Errors use the standard `ProblemDetails` format. A refused stamp includes `distanceMeters` and `allowedRadiusMeters`, so the app can say how far away the traveller is.
 
@@ -198,9 +201,10 @@ Errors use the standard `ProblemDetails` format. A refused stamp includes `dista
 | Guide | Decline a request | any time while it's pending |
 | Guide | Cancel a confirmed booking | before its start date |
 | Guide | Mark a booking completed | from its last day; this unlocks the traveller's review |
+| Imshina team (admin) | The same four actions for ready-made trip bookings | same rules |
 | Traveller | Cancel a booking | any time while it's pending, or before the start date once confirmed |
 
-A guide can't be booked for dates that overlap another pending or confirmed booking. Guide bookings can be up to 30 days long, and prices are always calculated on the server.
+A request nobody answers before its start date shows as "No reply" to the traveller. Groups can't be joined once their start date has passed. A guide can't be booked for dates that overlap another pending or confirmed booking. Guide bookings can be up to 30 days long, and prices are always calculated on the server.
 
 ## Project structure
 
@@ -208,7 +212,7 @@ A guide can't be booked for dates that overlap another pending or confirmed book
 backend/TourIraq.Api/
 ├── Controllers/   Auth, Places, Governorates, Guides, GuideBookings, Bookings, Trips,
 │                  Groups, Stamps, Passport, Rewards, PlaceStories, AdminPlaces,
-│                  AdminInsights, AdminSetup
+│                  AdminInsights, AdminTripBookings, AdminSetup
 ├── Data/          AppDbContext, SeedData (18 places, guides, trips, groups, rewards),
 │                  OnSiteStories, DemoVenue
 ├── DTOs/          request and response shapes (entities are never returned directly)

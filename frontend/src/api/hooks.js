@@ -56,6 +56,9 @@ export const useAdminSetupStatus = () => useQuery('admin-setup', async () => (aw
 // A guide's booking inbox (requests travellers sent them).
 export const useGuideBookings = () => useUserQuery('guide-bookings', ['Guide'], async () => (await api.get('/guide/bookings')).data)
 
+// Trip bookings, answered by the Imshina team (admins).
+export const useTripBookings = () => useUserQuery('trip-bookings', ['Admin'], async () => (await api.get('/admin/trip-bookings')).data)
+
 // Visitor numbers for admins (aggregates only).
 export const useInsights = () => useUserQuery('insights', ['Admin'], async () => (await api.get('/admin/insights')).data)
 

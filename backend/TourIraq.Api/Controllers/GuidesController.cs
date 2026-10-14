@@ -68,13 +68,49 @@ public class GuidesController(AppDbContext db) : ControllerBase
             UserId = summary.UserId, FullName = summary.FullName, Country = summary.Country, Bio = summary.Bio,
             PricePerDay = summary.PricePerDay, AvgRating = summary.AvgRating, ReviewsCount = summary.ReviewsCount,
             Languages = summary.Languages, Destinations = summary.Destinations,
-            BookingInfo = "Book this guide per day via POST /api/bookings (type Guide). Total price = price per day x number of days.",
+            BookingInfo = "Pick your dates and send a request. The guide accepts or declines; the price is per day.",
             Reviews = g.Reviews.OrderByDescending(r => r.CreatedAt).Select(r => new ReviewDto
             {
                 Id = r.Id, TouristName = r.Tourist.FullName, Rating = r.Rating,
                 Comment = r.Comment, CreatedAt = r.CreatedAt
             }).ToList()
         });
+    }
+
+    /// <summary>The signed-in guide updates their bio, price, languages and the places they guide at.</summary>
+    [HttpPut("me")]
+    [Authorize(Roles = "Guide")]
+    public async Task<ActionResult<GuideDetailDto>> UpdateMine(UpdateGuideProfileRequest req, CancellationToken ct)
+    {
+        var userId = User.GetUserId()!.Value;
+        var g = await db.GuideProfiles
+            .Include(x => x.Languages).Include(x => x.Places)
+            .FirstOrDefaultAsync(x => x.UserId == userId, ct);
+        if (g is null) return Problem(statusCode: 404, title: "Guide profile not found");
+
+        var languages = req.Languages.Select(l => (l ?? string.Empty).Trim()).Where(l => l.Length is > 0 and <= 40)
+            .Distinct(StringComparer.OrdinalIgnoreCase).Take(10).ToList();
+        if (languages.Count == 0)
+            return Problem(statusCode: 400, title: "Languages needed", detail: "Choose at least one language you guide in.");
+
+        var placeIds = req.PlaceIds.Distinct().ToList();
+        var known = await db.Places.Where(p => placeIds.Contains(p.Id)).Select(p => p.Id).ToListAsync(ct);
+        if (known.Count != placeIds.Count)
+            return Problem(statusCode: 400, title: "Unknown places", detail: "Some of the chosen places don't exist.");
+
+        g.Bio = (req.Bio ?? string.Empty).Trim();
+        g.PricePerDay = Math.Round(req.PricePerDay!.Value, 2);
+
+        g.Languages.RemoveAll(l => !languages.Contains(l.Language, StringComparer.OrdinalIgnoreCase));
+        foreach (var l in languages.Where(l => !g.Languages.Any(x => string.Equals(x.Language, l, StringComparison.OrdinalIgnoreCase))))
+            g.Languages.Add(new GuideLanguage { GuideUserId = userId, Language = l });
+
+        g.Places.RemoveAll(p => !placeIds.Contains(p.PlaceId));
+        foreach (var pid in placeIds.Where(pid => !g.Places.Any(p => p.PlaceId == pid)))
+            g.Places.Add(new GuidePlace { GuideUserId = userId, PlaceId = pid });
+
+        await db.SaveChangesAsync(ct);
+        return await GetById(userId, ct);
     }
 
     [HttpPost("{id:int}/reviews")]
@@ -130,7 +166,7 @@ public class GuidesController(AppDbContext db) : ControllerBase
         UserId = g.UserId, FullName = g.User.FullName, Country = g.User.Country, Bio = g.Bio,
         PricePerDay = g.PricePerDay, AvgRating = g.AvgRating, ReviewsCount = g.ReviewsCount,
         Languages = g.Languages.Select(l => l.Language).OrderBy(l => l).ToList(),
-        Destinations = g.Places.Select(p => new PlaceRefDto { Id = p.PlaceId, Name = p.Place.Name, GovernorateId = p.Place.GovernorateId })
+        Destinations = g.Places.Select(p => new PlaceRefDto { Id = p.PlaceId, Name = p.Place.Name, NameAr = p.Place.NameAr, GovernorateId = p.Place.GovernorateId })
             .OrderBy(p => p.Name).ToList()
     };
 }

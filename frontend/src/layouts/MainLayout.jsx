@@ -5,7 +5,7 @@ import { Wordmark } from '../components/ui'
 import { useAuth } from '../context/AuthContext'
 import { useI18n } from '../i18n/I18nContext'
 import useUpdates from '../hooks/useUpdates'
-import { useGuideBookings } from '../api/hooks'
+import { useGuideBookings, useTripBookings } from '../api/hooks'
 
 // Bottom tab bar on phones, a left rail on desktop. Items depend on the account type.
 function navFor(role) {
@@ -25,8 +25,8 @@ function navFor(role) {
   if (role === 'Admin') return [
     { to: '/', icon: 'compass', label: 'nav.discover', end: true },
     { to: '/admin/insights', icon: 'chart', label: 'nav.insights' },
+    { to: '/admin/bookings', icon: 'ticket', label: 'nav.tripBookings', badge: 'requests' },
     { to: '/admin/places/new', icon: 'admin', label: 'nav.addPlace' },
-    { to: '/guides', icon: 'guide', label: 'nav.guides' },
     { to: '/profile', icon: 'user', label: 'nav.me' },
   ]
   return [
@@ -43,7 +43,9 @@ function TabBar({ hideOnMobile }) {
   const { t, lang, toggleLang } = useI18n()
   const { unread } = useUpdates()
   const guideBookings = useGuideBookings()
-  const requests = (guideBookings.data || []).filter((b) => b.status === 'Pending').length
+  const tripBookings = useTripBookings()
+  // Requests waiting for an answer: a guide's own, or trip bookings for admins.
+  const requests = ((user?.role === 'Admin' ? tripBookings.data : guideBookings.data) || []).filter((b) => b.status === 'Pending').length
   const items = navFor(user?.role)
   const isTourist = !user || user.role === 'Tourist'
 

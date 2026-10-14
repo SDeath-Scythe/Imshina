@@ -93,6 +93,9 @@ public class GroupsController(AppDbContext db) : ControllerBase
             if (group.CreatorId == userId)
                 return Problem(statusCode: 409, title: "Already a member", detail: "You created this group.");
 
+            if (group.StartDate < DateOnly.FromDateTime(DateTime.UtcNow))
+                return Problem(statusCode: 409, title: "Group already left", detail: "This group's trip has already started.");
+
             if ((group.GenderType == GroupGenderType.MenOnly && user.Gender != Gender.Male) ||
                 (group.GenderType == GroupGenderType.WomenOnly && user.Gender != Gender.Female))
                 return Problem(statusCode: 403, title: "Not eligible", detail: "This group's gender restriction does not match your account.");

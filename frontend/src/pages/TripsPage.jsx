@@ -68,10 +68,10 @@ export default function TripsPage() {
           options={[{ value: 'ready', label: t('trips.readyMade') }, { value: 'mine', label: t('trips.mine'), sub: mine.data ? mine.data.length : undefined }]} />
       )}
 
-      <Link to={isTourist ? '/trips/new' : '/login'} state={isTourist ? undefined : { from: '/trips/new' }} className="card card-link card-pad row" style={{ '--gap': '14px', border: '1.5px dashed var(--lapis)' }}>
+      {(isTourist || !user) && <Link to={isTourist ? '/trips/new' : '/login'} state={isTourist ? undefined : { from: '/trips/new' }} className="card card-link card-pad row" style={{ '--gap': '14px', border: '1.5px dashed var(--lapis)' }}>
         <span style={{ width: 46, height: 46, flexShrink: 0, borderRadius: 23, background: 'var(--lapis)', color: 'var(--gold)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}><Icon name="plus" /></span>
         <span className="grow stack" style={{ '--gap': '0px' }}><b>{t('trips.build')}</b><span className="small muted">{isTourist ? t('trips.buildText') : t('trips.buildGuest')}</span></span>
-      </Link>
+      </Link>}
 
       {list.error && <ErrorState error={list.error} onRetry={list.reload} />}
       {list.loading ? <SkeletonRows n={3} h={190} /> : (list.data || []).length === 0 ? (

@@ -9,7 +9,7 @@ import { useI18n } from '../i18n/I18nContext'
 import { useBookings } from '../api/hooks'
 import { firstName, formatPrice, formatRange, todayISO } from '../utils/helpers'
 
-export const STATUS_TONE = { Pending: 'gold', Confirmed: 'blue', Completed: 'green', Cancelled: 'clay' }
+export const STATUS_TONE = { Pending: 'gold', Confirmed: 'blue', Completed: 'green', Cancelled: 'clay', Expired: 'plain' }
 
 export default function BookingsPage() {
   const { t, te } = useI18n()
@@ -20,11 +20,17 @@ export default function BookingsPage() {
   const [tab, setTab] = useState('upcoming')
   const today = todayISO()
   const all = bookings.data || []
-  const upcoming = all.filter((b) => b.endDate >= today && b.status !== 'Cancelled' && b.status !== 'Completed').sort((a, b) => (a.startDate < b.startDate ? -1 : 1))
+  const upcoming = all.filter((b) => b.endDate >= today && b.status !== 'Cancelled' && b.status !== 'Completed' && !(b.status === 'Pending' && b.startDate < today)).sort((a, b) => (a.startDate < b.startDate ? -1 : 1))
   const past = all.filter((b) => !upcoming.includes(b)).sort((a, b) => (a.startDate < b.startDate ? 1 : -1))
   const list = tab === 'upcoming' ? upcoming : past
   // Pending: any time. Confirmed: until the day before it starts (the server checks the same rule).
-  const canCancel = (b) => b.status === 'Pending' || (b.status === 'Confirmed' && b.startDate > today)
+  const canCancel = (b) => (b.status === 'Pending' && b.startDate >= today) || (b.status === 'Confirmed' && b.startDate > today)
+  // A request nobody answered before its start date is shown as "No reply" rather than waiting forever.
+  const shownStatus = (b) => (b.status === 'Pending' && b.startDate < today ? 'Expired' : b.status)
+  const note = (b) => {
+    const st = shownStatus(b)
+    return st === 'Pending' && b.type === 'Trip' ? t('bookings.notePendingTrip') : t(`bookings.note${st}`)
+  }
 
   const cancel = async () => {
     setBusy(true)
@@ -68,10 +74,10 @@ export default function BookingsPage() {
                     <b style={{ fontSize: 15.5 }}>{title}</b>
                     <span className="small muted">{isGuide ? t('bookings.guide') : t('bookings.trip')} · {formatRange(b.startDate, b.endDate)}</span>
                   </Link>
-                  <Badge tone={STATUS_TONE[b.status]}>{t(`status.${b.status}`)}</Badge>
+                  <Badge tone={STATUS_TONE[shownStatus(b)]}>{t(`status.${shownStatus(b)}`)}</Badge>
                 </div>
                 <div className="row-between" style={{ paddingTop: 10, borderTop: '1px solid #F0EBDF' }}>
-                  <span className="small"><b className="num">{formatPrice(b.totalPrice)}</b> <span className="muted">· {t(`bookings.note${b.status}`)}</span></span>
+                  <span className="small"><b className="num">{formatPrice(b.totalPrice)}</b> <span className="muted">· {note(b)}</span></span>
                   {b.canReview && <Link to={`/bookings/${b.id}/review`} className="btn btn-gold btn-sm">{t('guide.writeReview')}</Link>}
                   {canCancel(b) && <button type="button" className="link-btn" style={{ color: 'var(--clay)', minHeight: 36, padding: '4px 0' }} onClick={() => setCancelling(b)}>{t('bookings.cancel')}</button>}
                 </div>

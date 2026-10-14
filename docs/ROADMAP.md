@@ -6,7 +6,10 @@ What's built, what still needs checking, and what's next, in rough priority orde
 
 ### 1. Build and test the backend
 The API code added in October 2026 was written without a .NET compiler at hand. Run `dotnet build`, then click through each feature with the real API:
-- `Controllers/GuideBookingsController.cs` and the cancel action in `Controllers/BookingsController.cs` (booking inbox and cancelling)
+- `Controllers/GuideBookingsController.cs`, `Services/BookingRules.cs` and the cancel action in `Controllers/BookingsController.cs` (booking inbox and cancelling)
+- `Controllers/AdminTripBookingsController.cs` (admins answer trip bookings)
+- `PUT /api/guides/me` in `Controllers/GuidesController.cs` (guides edit their profile and places)
+- The late-join check in `Controllers/GroupsController.cs` and the duplicate-name check in `Controllers/AdminPlacesController.cs`
 - `Controllers/AdminInsightsController.cs` and the insights DTOs at the end of `DTOs/Dtos.cs`
 - `Data/DemoVenue.cs` and its call in `Program.cs`
 - `FixPlaceCoordinatesAsync` in `Data/SeedData.cs`
@@ -52,8 +55,15 @@ Follow [DEPLOY.md](DEPLOY.md), set up the venue demo stamp, and rehearse on the 
 
 Safety tools must ship before anything that shows strangers to each other, especially for women-only groups.
 
-### 8. Ready-made trips need an owner
-Trip bookings stay pending because nobody can confirm them. Give trips an owning agency (`Trip.AgencyUserId`, migration) and reuse the guide inbox for agencies.
+### 8. Trips run by agencies
+**Done:** the Imshina team (admins) answers ready-made trip bookings in a Trip bookings inbox.
+**Next:** let travel agencies run their own trips: an owning agency per trip (`Trip.AgencyUserId`, migration), agency sign-up, and the same inbox for agencies.
+
+### 8b. Small gaps found in the October check
+- Travellers can't edit or delete a custom trip, or leave a group / withdraw a join request.
+- Admins can add places but not edit or remove them.
+- The map filters don't include the Nature and Other categories.
+- Demo account emails still use the old `touriraq.demo` domain (also the API project name `TourIraq.Api`); renaming needs a seed fix-up for existing databases.
 
 ### 9. Notifications
 Updates are only seen when the app is opened. Add web push (a service worker and VAPID keys) for booking decisions, group approvals and new guide requests, with email as a fallback.
@@ -62,7 +72,7 @@ Updates are only seen when the app is opened. Add web push (a service worker and
 Signal is weak at remote sites. A service worker can cache the app shell, places and the passport. Stamps still need the server: either show "will send when you're back online", queueing the photo and location with a timestamp and accepting a weaker anti-cheat check, or keep stamping online-only.
 
 ### 11. Accounts
-Forgot password (needs an email provider and reset tokens), account deletion, editing the profile.
+Forgot password (needs an email provider and reset tokens), account deletion, editing a traveller's name and country.
 
 ### 12. Payments
 Qi Card or ZainCash for guide and trip bookings. Today, travellers pay on the day.

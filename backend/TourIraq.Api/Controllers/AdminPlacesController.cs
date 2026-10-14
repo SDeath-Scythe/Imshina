@@ -27,6 +27,9 @@ public class AdminPlacesController(AppDbContext db, FileStorageService fileStora
             return Problem(statusCode: StatusCodes.Status400BadRequest, title: "Too many photos", detail: "Upload at most five additional photos.");
         if (!await db.Governorates.AnyAsync(g => g.Id == request.GovernorateId, ct))
             return Problem(statusCode: StatusCodes.Status400BadRequest, title: "Unknown governorate");
+        var name = request.Name.Trim();
+        if (await db.Places.AnyAsync(p => p.Name == name, ct))
+            return Problem(statusCode: StatusCodes.Status409Conflict, title: "Name already used", detail: "A place with this English name already exists.");
 
         var savedUrls = new List<string>();
         var (coverUrl, coverError) = await fileStorage.SaveImageAsync(request.CoverImage, ct);

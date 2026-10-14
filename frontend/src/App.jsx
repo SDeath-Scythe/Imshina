@@ -18,6 +18,7 @@ import GuidesPage from './pages/GuidesPage'
 import GuideDetailPage from './pages/GuideDetailPage'
 import BookGuidePage from './pages/BookGuidePage'
 import GuideInboxPage from './pages/GuideInboxPage'
+import GuideProfilePage from './pages/GuideProfilePage'
 import InsightsPage from './pages/InsightsPage'
 import PracticalPage from './pages/PracticalPage'
 import TripsPage from './pages/TripsPage'
@@ -70,6 +71,7 @@ export default function App() {
         <Route path="/admin/setup" element={<AdminSetupPage />} />
         <Route path="/admin/places/new" element={<ProtectedRoute roles={['Admin']}><AdminPlacePage /></ProtectedRoute>} />
         <Route path="/admin/insights" element={<ProtectedRoute roles={['Admin']}><InsightsPage /></ProtectedRoute>} />
+        <Route path="/admin/bookings" element={<ProtectedRoute roles={['Admin']}><GuideInboxPage mode="trips" /></ProtectedRoute>} />
         <Route path="*" element={<NotFoundPage />} />
       </Route>
 
@@ -78,6 +80,7 @@ export default function App() {
         <Route path="/places/:id" element={<PlacePage />} />
         <Route path="/guides/:id" element={<GuideDetailPage />} />
         <Route path="/guides/:id/book" element={tourist(<BookGuidePage />)} />
+        <Route path="/guide/profile" element={<ProtectedRoute roles={['Guide']}><GuideProfilePage /></ProtectedRoute>} />
         <Route path="/trips/new" element={tourist(<TripBuilderPage />)} />
         <Route path="/trips/:id" element={<TripDetailPage />} />
         <Route path="/groups/new" element={<ProtectedRoute roles={['Tourist', 'Agency']}><CreateGroupPage /></ProtectedRoute>} />

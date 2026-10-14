@@ -4,10 +4,10 @@ import Icon from '../components/Icon'
 import { BackButton, Notice, Segmented } from '../components/ui'
 import { useAuth } from '../context/AuthContext'
 import { useI18n } from '../i18n/I18nContext'
-import { homeFor } from './LoginPage'
+import { homeFor, safeFrom } from './LoginPage'
+import { GUIDE_LANGS } from '../utils/helpers'
 
 const COUNTRIES = ['Iraq', 'United Kingdom', 'United States', 'Germany', 'France', 'Iran', 'Turkey', 'Lebanon', 'Kuwait', 'Saudi Arabia', 'Pakistan', 'India', 'Canada', 'Australia', 'Netherlands', 'Italy', 'Spain', 'Japan', 'China']
-const GUIDE_LANGS = ['English', 'Arabic', 'Kurdish', 'Persian', 'Turkish', 'German', 'French', 'Urdu']
 
 export default function RegisterPage() {
   const { t, tf, te, lang } = useI18n()
@@ -22,7 +22,7 @@ export default function RegisterPage() {
   const isGuide = form.role === 'Guide'
   const from = location.state?.from
 
-  if (isAuthenticated) return <Navigate to={from || homeFor(user.role)} replace />
+  if (isAuthenticated) return <Navigate to={safeFrom(from, user.role) || homeFor(user.role)} replace />
 
   const toggleLang = (l) => setForm((f) => ({ ...f, languages: f.languages.includes(l) ? f.languages.filter((x) => x !== l) : [...f.languages, l] }))
 
@@ -32,6 +32,7 @@ export default function RegisterPage() {
     if (!form.gender) { setError(t('register.needGender')); return }
     if (form.password.length < 8) { setError(t('register.shortPassword')); return }
     if (isGuide && form.languages.length === 0) { setError(t('register.needLanguage')); return }
+    if (isGuide && !(Number(form.pricePerDay) > 0 && Number(form.pricePerDay) <= 10000)) { setError(t('register.needPrice')); return }
     const payload = {
       fullName: form.fullName.trim(), email: form.email.trim(), password: form.password, role: form.role,
       gender: form.gender, country: form.country.trim(), preferredLanguage: lang === 'ar' ? 'Arabic' : 'English',
@@ -40,7 +41,9 @@ export default function RegisterPage() {
     setBusy(true)
     try {
       const u = await register(payload)
-      navigate(from || (u.role === 'Guide' ? `/guides/${u.id}` : homeFor(u.role)), { replace: true })
+      // A new guide goes straight to their profile to pick the places they guide at.
+      if (u.role === 'Guide') navigate('/guide/profile', { replace: true, state: { welcome: true } })
+      else navigate(safeFrom(from, u.role) || homeFor(u.role), { replace: true })
     } catch (err) { setError(te(err)) } finally { setBusy(false) }
   }
 

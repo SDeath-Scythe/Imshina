@@ -9,7 +9,7 @@ export function Wordmark({ size = 28, sub = false }) {
   return (
     <span className="row" style={{ '--gap': '8px', alignItems: 'baseline' }}>
       <span className="wordmark" style={{ fontSize: size }} lang="ar">امشينا</span>
-      {sub && <span className="display muted" style={{ fontSize: Math.round(size / 2) }}>Imshina</span>}
+      {sub && <span className="display muted wordmark-sub" style={{ fontSize: Math.round(size / 2) }}>Imshina</span>}
     </span>
   )
 }
@@ -19,7 +19,9 @@ export function BackButton({ fallback = '/', variant = '', label }) {
   const navigate = useNavigate()
   const location = useLocation()
   const { t } = useI18n()
-  const canGoBack = location.key !== 'default'
+  // The browser router numbers in-app history entries: idx 0 means this page was opened directly
+  // (or reached through a redirect), so going back would leave the app or do nothing. Use the fallback then.
+  const canGoBack = location.key !== 'default' && (window.history.state?.idx ?? 1) > 0
   return (
     <button type="button" className={`icon-btn ${variant}`} aria-label={label || t('common.back')}
       onClick={() => (canGoBack ? navigate(-1) : navigate(fallback))}>

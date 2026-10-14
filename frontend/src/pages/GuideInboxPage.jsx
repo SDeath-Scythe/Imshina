@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import api from '../api/client'
-import { useGuideBookings } from '../api/hooks'
+import { useGuideBookings, useTripBookings } from '../api/hooks'
 import { invalidate } from '../hooks/useQuery'
 import { Avatar, Badge, ConfirmSheet, Empty, ErrorState, Notice, PageTitle, Segmented, SkeletonRows } from '../components/ui'
 import { useI18n } from '../i18n/I18nContext'
@@ -19,10 +19,18 @@ export function inboxGroups(list = [], today = todayISO()) {
   return { requests, confirmed, history, toFinish }
 }
 
-export default function GuideInboxPage() {
+/**
+ * The booking inbox for whoever runs a booking: a guide answers requests for themselves (mode "guide"),
+ * the Imshina team answers ready-made trip bookings (mode "trips", admins only). Same rules, same screen.
+ */
+export default function GuideInboxPage({ mode = 'guide' }) {
   const { t, te } = useI18n()
   const toast = useToast()
-  const bookings = useGuideBookings()
+  const trips = mode === 'trips'
+  const guideBookings = useGuideBookings()
+  const tripBookings = useTripBookings()
+  const bookings = trips ? tripBookings : guideBookings
+  const endpoint = trips ? '/admin/trip-bookings' : '/guide/bookings'
   const today = todayISO()
   const { requests, confirmed, history, toFinish } = inboxGroups(bookings.data || [], today)
   const [tab, setTab] = useState(() => (requests.length === 0 && toFinish > 0 ? 'confirmed' : 'requests'))
@@ -35,26 +43,26 @@ export default function GuideInboxPage() {
     const declined = status === 'Cancelled' && b.status === 'Pending'
     setBusy(b.id)
     try {
-      await api.put(`/guide/bookings/${b.id}/status`, { status })
+      await api.put(`${endpoint}/${b.id}/status`, { status })
       toast(status === 'Confirmed' ? t('inbox.acceptedToast', { name })
-        : status === 'Completed' ? t('inbox.completedToast', { name })
+        : status === 'Completed' ? t(trips ? 'tripInbox.completedToast' : 'inbox.completedToast', { name })
           : declined ? t('inbox.declinedToast') : t('inbox.cancelledToast'))
       setAsk(null)
       bookings.reload()
-      invalidate('guide-bookings')
+      invalidate(trips ? 'trip-bookings' : 'guide-bookings')
     } catch (err) { toast(te(err), 'error') } finally { setBusy(null) }
   }
 
   const list = tab === 'requests' ? requests : tab === 'confirmed' ? confirmed : history
   const empty = {
-    requests: [t('inbox.noRequests'), t('inbox.noRequestsText')],
+    requests: [t('inbox.noRequests'), t(trips ? 'tripInbox.noRequestsText' : 'inbox.noRequestsText')],
     confirmed: [t('inbox.noConfirmed'), t('inbox.noConfirmedText')],
     history: [t('inbox.noHistory'), null],
   }[tab]
 
   return (
     <div className="page">
-      <PageTitle title={t('inbox.title')} subtitle={t('inbox.sub')} />
+      <PageTitle title={t(trips ? 'tripInbox.title' : 'inbox.title')} subtitle={t(trips ? 'tripInbox.sub' : 'inbox.sub')} />
 
       <Segmented label={t('inbox.title')} value={tab} onChange={setTab} options={[
         { value: 'requests', label: t('inbox.requests'), sub: requests.length },
@@ -62,7 +70,7 @@ export default function GuideInboxPage() {
         { value: 'history', label: t('inbox.history'), sub: history.length },
       ]} />
 
-      {tab === 'confirmed' && toFinish > 0 && <Notice tone="info">{t('inbox.toFinish', { n: toFinish })}</Notice>}
+      {tab === 'confirmed' && toFinish > 0 && <Notice tone="info">{t(trips ? 'tripInbox.toFinish' : 'inbox.toFinish', { n: toFinish })}</Notice>}
       {bookings.error && <ErrorState error={bookings.error} onRetry={bookings.reload} />}
 
       {bookings.loading ? <SkeletonRows n={3} h={150} /> : list.length === 0 ? (
@@ -84,6 +92,7 @@ export default function GuideInboxPage() {
                   <Badge tone={STATUS_TONE[b.status]}>{t(`status.${b.status}`)}</Badge>
                 </div>
 
+                {trips && b.tripTitle && <b className="small" style={{ color: 'var(--lapis)' }}>{b.tripTitle}</b>}
                 <dl className="inbox-facts">
                   <div><dt>{t('inbox.dates')}</dt><dd>{formatRange(b.startDate, b.endDate)}</dd></div>
                   <div><dt>{t('inbox.length')}</dt><dd>{t('common.days', { n: b.days })}</dd></div>

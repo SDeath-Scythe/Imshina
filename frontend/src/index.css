@@ -439,6 +439,12 @@ input[type='range'] { accent-color: var(--lapis); width: 100%; }
 
 /* ---------- misc ---------- */
 .wordmark { font-family: var(--font-display); font-weight: 700; color: var(--lapis); line-height: 1; }
+/* Small phones: the home header keeps all its buttons by dropping the Latin wordmark and tightening gaps. */
+@media (max-width: 380px) {
+  .home-head .wordmark-sub { display: none; }
+  .home-head > .row { --gap: 6px !important; }
+  .home-head .btn-sm { padding-inline: 12px; }
+}
 .divider { height: 1px; background: var(--line); border: 0; margin: 0; }
 .kbd-hint { font-size: 12px; color: var(--faint); }
 .fade-in { animation: fade 240ms ease; }

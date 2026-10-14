@@ -35,6 +35,7 @@ export default function CreateGroupPage() {
     e?.preventDefault()
     setError('')
     if (!form.name.trim()) { setError(t('create.needName')); return }
+    if (!form.startDate || form.startDate < todayISO()) { setError(t('create.needDate')); return }
     setBusy(true)
     try {
       const { data } = await api.post('/groups', {

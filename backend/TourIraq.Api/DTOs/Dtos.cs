@@ -176,6 +176,7 @@ public class PlaceRefDto
 {
     public int Id { get; set; }
     public string Name { get; set; } = string.Empty;
+    public string NameAr { get; set; } = string.Empty;
     public int GovernorateId { get; set; }
 }
 
@@ -205,6 +206,15 @@ public class GuideDetailDto : GuideSummaryDto
 {
     public List<ReviewDto> Reviews { get; set; } = new();
     public string BookingInfo { get; set; } = string.Empty;
+}
+
+// A guide edits their own public profile (PUT /api/guides/me).
+public class UpdateGuideProfileRequest
+{
+    [MaxLength(2000)] public string Bio { get; set; } = string.Empty;
+    [Required, Range(0, 10000)] public decimal? PricePerDay { get; set; }
+    [Required, MinLength(1), MaxLength(10)] public List<string> Languages { get; set; } = new();
+    [MaxLength(60)] public List<int> PlaceIds { get; set; } = new(); // the places this guide takes visitors to
 }
 
 public class CreateReviewRequest
@@ -240,10 +250,13 @@ public class BookingDto
     public bool CanReview { get; set; }
 }
 
-// A booking as the guide sees it: who asked, when, and for how much.
+// A booking as the side that runs it sees it (a guide, or the Imshina team for trips): who asked, when, and for how much.
 public class GuideBookingDto
 {
     public int Id { get; set; }
+    public string Type { get; set; } = string.Empty; // Guide or Trip
+    public int? TripId { get; set; }
+    public string? TripTitle { get; set; }
     public string TouristName { get; set; } = string.Empty;
     public string TouristCountry { get; set; } = string.Empty;
     public DateOnly StartDate { get; set; }

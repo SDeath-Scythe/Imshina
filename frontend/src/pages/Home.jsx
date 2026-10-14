@@ -15,7 +15,7 @@ function Header() {
   const { t, lang, toggleLang } = useI18n()
   const { unread } = useUpdates()
   return (
-    <header className="row-between">
+    <header className="row-between home-head">
       <Link to="/" aria-label={t('brand')} style={{ textDecoration: 'none' }}><Wordmark size={28} sub /></Link>
       <div className="row" style={{ '--gap': '8px' }}>
         <button type="button" className="icon-btn display" onClick={toggleLang} aria-label={t('a11y.switchLanguage')} lang={lang === 'en' ? 'ar' : 'en'} style={{ fontSize: 16 }}>

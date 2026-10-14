@@ -114,7 +114,10 @@ export default function GroupDetailPage() {
         {group.tripId && (
           <Link to={`/trips/${group.tripId}`} className="card card-link card-pad row" style={{ '--gap': '12px' }}>
             <Icon name="route" style={{ color: 'var(--lapis)' }} />
-            <span className="grow stack" style={{ '--gap': '0px' }}><span className="small muted">{t('groups.followsTrip')}</span><b>{group.tripTitle}</b></span>
+            <span className="grow stack" style={{ '--gap': '0px' }}>
+              <span className="small muted">{t('groups.followsTrip')}</span><b>{group.tripTitle}</b>
+              {(isHost || group.myStatus === 'Approved') && <span className="small" style={{ color: 'var(--ochre)' }}>{t('groups.bookTripHint', { date: formatShortDate(group.startDate) })}</span>}
+            </span>
             <Icon name="forward" className="flip-rtl faint" />
           </Link>
         )}

@@ -3,7 +3,7 @@ import Icon from '../components/Icon'
 import { Avatar, Badge, Notice, Section, Segmented, SignInPrompt, Wordmark } from '../components/ui'
 import { useAuth } from '../context/AuthContext'
 import { useI18n } from '../i18n/I18nContext'
-import { useBookings, useGroups, useGuideBookings, useMyTrips, usePassport, useRewards } from '../api/hooks'
+import { useBookings, useGroups, useGuideBookings, useMyTrips, usePassport, useRewards, useTripBookings } from '../api/hooks'
 import useUpdates from '../hooks/useUpdates'
 
 function MenuLink({ to, icon, label, meta }) {
@@ -25,6 +25,7 @@ export default function ProfilePage() {
   const rewards = useRewards()
   const bookings = useBookings()
   const guideBookings = useGuideBookings()
+  const tripBookings = useTripBookings()
   const myTrips = useMyTrips()
   const groups = useGroups()
   const { unread } = useUpdates()
@@ -51,6 +52,7 @@ export default function ProfilePage() {
   const joined = (groups.data || []).filter((g) => g.myStatus === 'Approved').length
   const waiting = (bookings.data || []).filter((b) => b.status === 'Pending').length
   const guideWaiting = (guideBookings.data || []).filter((b) => b.status === 'Pending').length
+  const tripWaiting = (tripBookings.data || []).filter((b) => b.status === 'Pending').length
 
   return (
     <div className="page">
@@ -83,6 +85,7 @@ export default function ProfilePage() {
         {role === 'Guide' && (
           <>
             <MenuLink to="/guide/bookings" icon="ticket" label={t('inbox.title')} meta={guideWaiting ? t('profile.waiting', { n: guideWaiting }) : ''} />
+            <MenuLink to="/guide/profile" icon="edit" label={t('guideEdit.title')} />
             <MenuLink to={`/guides/${user.id}`} icon="eye" label={t('profile.publicProfile')} />
             <MenuLink to="/guides" icon="guide" label={t('nav.guides')} />
           </>
@@ -96,6 +99,8 @@ export default function ProfilePage() {
         {role === 'Admin' && (
           <>
             <MenuLink to="/admin/insights" icon="chart" label={t('nav.insights')} />
+            <MenuLink to="/admin/bookings" icon="ticket" label={t('tripInbox.title')} meta={tripWaiting ? t('profile.waiting', { n: tripWaiting }) : ''} />
+            <MenuLink to="/guides" icon="guide" label={t('nav.guides')} />
             <MenuLink to="/admin/places/new" icon="admin" label={t('nav.addPlace')} />
           </>
         )}

@@ -99,3 +99,6 @@ export function couponCode(userId, rewardId) {
   const n = (Number(userId) * 7919 + Number(rewardId) * 104729) % 1679616
   return n.toString(36).toUpperCase().padStart(4, '7')
 }
+
+// Languages offered when a guide sets up their profile.
+export const GUIDE_LANGS = ['English', 'Arabic', 'Kurdish', 'Persian', 'Turkish', 'German', 'French', 'Urdu']

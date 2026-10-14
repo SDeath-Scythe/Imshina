@@ -34,7 +34,7 @@ export default function UpdatesPage() {
       case 'review': return [t('updates.review', { name: x.booking.guideName }), t('updates.reviewText')]
       case 'confirmed': return [t('updates.confirmed'), `${x.booking.guideName || x.booking.tripTitle} · ${formatRange(x.booking.startDate, x.booking.endDate)}`]
       case 'cancelled': return [t('updates.cancelled'), `${x.booking.guideName || x.booking.tripTitle} · ${formatRange(x.booking.startDate, x.booking.endDate)}`]
-      case 'request': return [t('updates.request'), `${x.booking.touristName} · ${formatRange(x.booking.startDate, x.booking.endDate)}`]
+      case 'request': return [t(x.booking.tripTitle ? 'updates.tripRequest' : 'updates.request'), `${x.booking.touristName}${x.booking.tripTitle ? ` · ${x.booking.tripTitle}` : ''} · ${formatRange(x.booking.startDate, x.booking.endDate)}`]
       case 'approved': return [t('updates.approved'), x.group.name]
       case 'rejected': return [t('updates.rejected'), x.group.name]
       default: return ['', '']

@@ -22,7 +22,9 @@ public static class DemoVenue
         {
             if (existing is not null)
             {
+                // Stamps and custom-trip stops point at the place without cascading, so remove them first.
                 db.Stamps.RemoveRange(db.Stamps.Where(s => s.PlaceId == existing.Id));
+                db.TripPlaces.RemoveRange(db.TripPlaces.Where(tp => tp.PlaceId == existing.Id));
                 db.Places.Remove(existing);
                 await db.SaveChangesAsync();
             }
