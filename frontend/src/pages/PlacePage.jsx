@@ -115,6 +115,7 @@ export default function PlacePage() {
   const passport = usePassport()
   const guides = useGuides({ governorateId: place?.governorateId })
   const [more, setMore] = useState(false)
+  const [coverFailed, setCoverFailed] = useState(null) // a photo URL that didn't load; the brick tile shows instead
   const isTourist = user?.role === 'Tourist'
   const stamp = passport.data?.stamps.find((s) => String(s.placeId) === String(id))
   const placeGuides = useMemo(() => (guides.data || []).filter((g) => g.destinations.some((d) => String(d.id) === String(id))), [guides.data, id])
@@ -124,7 +125,8 @@ export default function PlacePage() {
     return <div className="page"><Skeleton h={260} r={24} /><Skeleton h={34} w="60%" /><Skeleton h={90} /></div>
   }
 
-  const cover = imageUrl(place.coverImageUrl)
+  const coverSrc = imageUrl(place.coverImageUrl)
+  const cover = coverSrc && coverFailed !== coverSrc ? coverSrc : null
   const d = position ? distanceMeters(position, placePoint(place)) : null
   const outside = d != null && d > place.stampRadiusMeters
   const mins = walkMinutes(d)
@@ -145,7 +147,7 @@ export default function PlacePage() {
   return (
     <>
       <div className="cover bricks" style={{ '--brick': CATEGORY_TINT[place.category] }}>
-        {cover ? <img src={cover} alt={loc(place, 'name')} /> : <span style={{ color: 'rgba(255,255,255,0.35)', marginBottom: 60 }}><Icon name={CATEGORY_ICON[place.category] || 'pin'} size={120} stroke={1.2} /></span>}
+        {cover ? <img src={cover} alt={loc(place, 'name')} onError={() => setCoverFailed(coverSrc)} /> : <span style={{ color: 'rgba(255,255,255,0.35)', marginBottom: 60 }}><Icon name={CATEGORY_ICON[place.category] || 'pin'} size={120} stroke={1.2} /></span>}
         <div className="cover-actions">
           <BackButton variant="glass" fallback={`/cities/${place.governorateId}`} />
           <button type="button" className="icon-btn glass" onClick={share} aria-label={t('common.share')}><Icon name="share" size={18} /></button>

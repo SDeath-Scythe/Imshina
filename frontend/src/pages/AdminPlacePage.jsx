@@ -5,6 +5,7 @@ import Icon from '../components/Icon'
 import MapView from '../components/MapView'
 import { ErrorState, Notice, PageTitle, Skeleton } from '../components/ui'
 import { useToast } from '../context/ToastContext'
+import { useGeo } from '../context/GeoContext'
 import { useI18n } from '../i18n/I18nContext'
 import { useGovernorates } from '../api/hooks'
 import { invalidate } from '../hooks/useQuery'
@@ -56,6 +57,8 @@ export default function AdminPlacePage() {
   const toast = useToast()
   const govs = useGovernorates()
   const [form, setForm] = useState(emptyForm)
+  const { locate } = useGeo()
+  const [locating, setLocating] = useState(false)
   const [events, setEvents] = useState([emptyEvent()])
   const [cover, setCover] = useState(null)
   const [gallery, setGallery] = useState([])
@@ -120,6 +123,17 @@ export default function AdminPlacePage() {
       <Card title={t('admin.zone')} hint={t('admin.zoneHint')}>
         <MapView places={[]} zone={hasPoint ? { lat, lng, radius: Number(form.stampRadiusMeters) || 150 } : null}
           onPick={(p) => setForm((f) => ({ ...f, latitude: p.lat.toFixed(6), longitude: p.lng.toFixed(6) }))} height={320} label={t('admin.mapLabel')} />
+        <button type="button" className="btn btn-outline btn-sm" style={{ alignSelf: 'flex-start' }} disabled={locating}
+          onClick={async () => {
+            setLocating(true)
+            try {
+              const p = await locate()
+              setForm((f) => ({ ...f, latitude: p.lat.toFixed(6), longitude: p.lng.toFixed(6) }))
+              toast(t('admin.hereSet', { m: Math.round(p.accuracy || 0) }))
+            } catch { toast(t('admin.hereFailed'), 'error') } finally { setLocating(false) }
+          }}>
+          <Icon name="locate" size={16} />{locating ? t('admin.hereBusy') : t('admin.here')}
+        </button>
         <div className="form-row">
           <label className="field"><span className="req">{t('admin.lat')}</span><input type="number" step="any" min={-90} max={90} dir="ltr" {...bind('latitude')} required /></label>
           <label className="field"><span className="req">{t('admin.lng')}</span><input type="number" step="any" min={-180} max={180} dir="ltr" {...bind('longitude')} required /></label>

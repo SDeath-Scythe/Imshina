@@ -452,3 +452,52 @@ input[type='range'] { accent-color: var(--lapis); width: 100%; }
 .inbox-facts div { min-width: 0; }
 .inbox-facts dt { font-size: 11.5px; color: var(--muted); letter-spacing: 0.02em; }
 .inbox-facts dd { margin: 2px 0 0; font-weight: 600; font-size: 14.5px; }
+
+/* Share card preview: the 9:16 story image, sized to fit the sheet. */
+.share-preview { display: flex; align-items: center; justify-content: center; aspect-ratio: 9 / 16; max-height: 52dvh; max-width: 100%; margin-inline: auto; border-radius: 18px; overflow: hidden; background: var(--lapis-deep); }
+.share-preview img { width: 100%; height: 100%; object-fit: contain; display: block; }
+
+/* Trails: a short vertical route of stops, stamped ones filled in their city's ink. */
+.trail.complete { border-color: var(--green); }
+.trail-stops { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: 6px 14px; }
+.trail-stops li { display: inline-flex; align-items: center; gap: 6px; min-width: 0; color: var(--muted); }
+.trail-stops li.done { color: var(--ink); }
+.trail-dot { width: 20px; height: 20px; flex-shrink: 0; border-radius: 10px; border: 2px dashed var(--line-3); display: inline-flex; align-items: center; justify-content: center; color: #fff; }
+.trail-stops li.done .trail-dot { background: var(--stop-ink, var(--lapis)); border: 0; }
+
+/* Milestones: medals in a row, gold once reached. */
+.milestones { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(68px, 1fr)); gap: 8px; }
+.milestones li { display: flex; flex-direction: column; align-items: center; gap: 6px; text-align: center; color: var(--muted); }
+.milestones .medal { width: 54px; height: 54px; border-radius: 27px; display: flex; align-items: center; justify-content: center; font-size: 19px; font-weight: 700; border: 2px dashed var(--line-3); background: var(--surface); color: var(--muted); }
+.milestones li.reached { color: var(--ink); font-weight: 600; }
+.milestones li.reached .medal { background: var(--gold); border: 0; color: var(--lapis-deep); box-shadow: 0 0 0 4px rgba(242, 198, 107, 0.35); }
+.certificate { background: linear-gradient(160deg, var(--lapis-deep), var(--lapis)); }
+
+/* Insights: ranked bars and columns in one lapis hue on a recessive track. */
+.insight-tiles .stat b { font-size: 26px; }
+.barlist { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: minmax(0, 1.3fr) minmax(0, 1fr) auto; gap: 10px 12px; align-items: center; }
+.barlist li { display: contents; }
+.barlist-label { font-size: 14px; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.barlist-track { height: 12px; background: var(--paper-2); border-radius: 4px; overflow: hidden; }
+.barlist-bar { display: block; height: 100%; background: var(--lapis); border-start-end-radius: 4px; border-end-end-radius: 4px; min-width: 2px; }
+.barlist-value { font-weight: 600; font-size: 14px; text-align: end; min-width: 2ch; }
+.columns { margin: 0; display: flex; flex-direction: column; gap: 6px; }
+.columns-readout { min-height: 20px; }
+.columns-plot { height: 140px; display: grid; grid-template-columns: repeat(var(--n), minmax(0, 1fr)); gap: 2px; align-items: end; border-bottom: 1px solid var(--line-3); }
+.col { height: 100%; display: flex; align-items: flex-end; background: none; border: 0; padding: 0; cursor: default; }
+.col:focus-visible { outline: 2px solid var(--lapis); outline-offset: 2px; }
+.col-bar { display: block; width: 100%; background: var(--lapis); opacity: 0.55; border-radius: 4px 4px 0 0; transition: opacity 120ms; }
+.col.on .col-bar { opacity: 1; }
+.columns-axis { display: grid; grid-template-columns: repeat(var(--n), minmax(0, 1fr)); white-space: nowrap; font-size: 11.5px; }
+.columns-axis span { overflow: visible; display: flex; justify-content: center; min-width: 0; }
+
+/* Before you go: emergency numbers and collapsible sections. */
+.sos { display: flex; flex-direction: column; align-items: center; gap: 2px; padding: 10px 6px; border-radius: 14px; background: rgba(255, 255, 255, 0.08); color: #fff; text-decoration: none; }
+.sos b { font-size: 24px; color: var(--gold); }
+.practical summary { list-style: none; cursor: pointer; padding: 14px 16px; min-height: 56px; }
+.practical summary::-webkit-details-marker { display: none; }
+.practical summary:focus-visible { outline: 2px solid var(--lapis); outline-offset: -2px; border-radius: var(--r-lg); }
+.practical-icon { width: 38px; height: 38px; flex-shrink: 0; border-radius: 12px; background: var(--lapis-soft); color: var(--lapis); display: flex; align-items: center; justify-content: center; }
+.practical-chev { color: var(--muted); transition: transform 160ms; }
+.practical[open] .practical-chev { transform: rotate(180deg); }
+.practical-points { margin: 0; padding-inline-start: 20px; display: flex; flex-direction: column; gap: 8px; line-height: 1.55; }

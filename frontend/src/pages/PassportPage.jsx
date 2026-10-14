@@ -2,6 +2,8 @@ import { useMemo, useState } from 'react'
 import { Link } from 'react-router-dom'
 import Icon from '../components/Icon'
 import { Seal } from '../components/Seal'
+import ShareCardSheet, { stampCard } from '../components/ShareCard'
+import { Milestones, Trails } from '../components/Journey'
 import { Avatar, Empty, ErrorState, Progress, Section, Segmented, Sheet, SignInPrompt, Skeleton, SkeletonRows } from '../components/ui'
 import { useAuth } from '../context/AuthContext'
 import { useI18n } from '../i18n/I18nContext'
@@ -10,7 +12,7 @@ import { formatDate, formatDistance, govInk, imageUrl } from '../utils/helpers'
 
 const ROTATIONS = [-8, 6, -3, 9, -6, 4]
 
-function StampSheet({ stamp, place, onClose }) {
+function StampSheet({ stamp, place, onClose, count, total, onShare }) {
   const { t, loc } = useI18n()
   return (
     <Sheet open={!!stamp} onClose={onClose} title={place ? loc(place, 'name') : ''}>
@@ -22,7 +24,10 @@ function StampSheet({ stamp, place, onClose }) {
             <div className="stat"><span>{t('passport.collected')}</span><b style={{ fontSize: 15 }}>{formatDate(stamp.createdAt)}</b></div>
             <div className="stat"><span>{t('passport.fromSite')}</span><b style={{ fontSize: 15 }} className="num">{formatDistance(stamp.distanceMeters)}</b></div>
           </div>
-          <Link to={`/places/${stamp.placeId}`} className="btn btn-outline">{t('passport.openPlace')}</Link>
+          <div className="row" style={{ '--gap': '8px' }}>
+            <Link to={`/places/${stamp.placeId}`} className="btn btn-outline grow">{t('passport.openPlace')}</Link>
+            {place && <button type="button" className="btn grow" onClick={() => onShare({ stamp, place, count, total })}><Icon name="share" size={18} />{t('share.short')}</button>}
+          </div>
         </>
       )}
     </Sheet>
@@ -38,6 +43,8 @@ export default function PassportPage() {
   const govs = useGovernorates()
   const [tab, setTab] = useState(null)
   const [open, setOpen] = useState(null)
+  const [sharing, setSharing] = useState(null) // props for the share sheet: { card, fileName, shareTitle, shareText }
+  const i18n = useI18n()
 
   const stamps = useMemo(() => passport.data?.stamps || [], [passport.data])
   const byPlace = useMemo(() => new Map(stamps.map((s) => [s.placeId, s])), [stamps])
@@ -137,6 +144,9 @@ export default function PassportPage() {
                 )
               })}
             </div>
+
+            <Milestones count={count} total={total} userName={user.fullName} onShare={setSharing} />
+            <Trails places={places.data || []} stampedIds={new Set(byPlace.keys())} onShare={setSharing} />
           </>
         )}
 
@@ -169,7 +179,10 @@ export default function PassportPage() {
         </Section>
       </div>
 
-      <StampSheet stamp={open} place={open ? places.data?.find((p) => p.id === open.placeId) : null} onClose={() => setOpen(null)} />
+      <StampSheet stamp={open} place={open ? places.data?.find((p) => p.id === open.placeId) : null} onClose={() => setOpen(null)}
+        total={total} count={open ? [...stamps].sort((a, b) => (a.createdAt < b.createdAt ? -1 : 1)).indexOf(open) + 1 : 0}
+        onShare={(x) => { setOpen(null); setSharing(stampCard({ ...x, date: new Date(x.stamp.createdAt), i18n })) }} />
+      {sharing && <ShareCardSheet open onClose={() => setSharing(null)} {...sharing} />}
     </>
   )
 }

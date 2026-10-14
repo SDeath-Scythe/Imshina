@@ -18,6 +18,8 @@ import GuidesPage from './pages/GuidesPage'
 import GuideDetailPage from './pages/GuideDetailPage'
 import BookGuidePage from './pages/BookGuidePage'
 import GuideInboxPage from './pages/GuideInboxPage'
+import InsightsPage from './pages/InsightsPage'
+import PracticalPage from './pages/PracticalPage'
 import TripsPage from './pages/TripsPage'
 import TripDetailPage from './pages/TripDetailPage'
 import TripBuilderPage from './pages/TripBuilderPage'
@@ -62,10 +64,12 @@ export default function App() {
         <Route path="/groups" element={<GroupsPage />} />
         <Route path="/bookings" element={tourist(<BookingsPage />)} />
         <Route path="/guide/bookings" element={<ProtectedRoute roles={['Guide']}><GuideInboxPage /></ProtectedRoute>} />
+        <Route path="/practical" element={<PracticalPage />} />
         <Route path="/updates" element={<ProtectedRoute><UpdatesPage /></ProtectedRoute>} />
         <Route path="/profile" element={<ProfilePage />} />
         <Route path="/admin/setup" element={<AdminSetupPage />} />
         <Route path="/admin/places/new" element={<ProtectedRoute roles={['Admin']}><AdminPlacePage /></ProtectedRoute>} />
+        <Route path="/admin/insights" element={<ProtectedRoute roles={['Admin']}><InsightsPage /></ProtectedRoute>} />
         <Route path="*" element={<NotFoundPage />} />
       </Route>
 

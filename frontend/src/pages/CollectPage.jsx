@@ -4,6 +4,7 @@ import api from '../api/client'
 import Icon from '../components/Icon'
 import MapView from '../components/MapView'
 import { BigSeal } from '../components/Seal'
+import ShareCardSheet, { stampCard } from '../components/ShareCard'
 import { Skeleton } from '../components/ui'
 import { useGeo } from '../context/GeoContext'
 import { useI18n } from '../i18n/I18nContext'
@@ -94,6 +95,7 @@ export default function CollectPage() {
   const [preview, setPreview] = useState(null)
   const [result, setResult] = useState(null)
   const [failure, setFailure] = useState('')
+  const [sharing, setSharing] = useState(false)
   const fileRef = useRef(null)
   const cam = useCamera(phase === 'camera')
   const close = () => navigate(`/places/${id}`, { replace: true })
@@ -223,9 +225,12 @@ export default function CollectPage() {
           </Link>
         ))}
         <div className="stack" style={{ width: '100%', marginTop: 'auto', '--gap': '10px' }}>
-          <Link to="/passport" replace className="btn btn-lg">{t('place.openPassport')}</Link>
+          <button type="button" className="btn btn-gold btn-lg" onClick={() => setSharing(true)}><Icon name="share" size={20} />{t('share.button')}</button>
+          <Link to="/passport" replace className="btn btn-outline btn-lg">{t('place.openPassport')}</Link>
           <Link to="/" replace className="btn btn-ghost">{t('collect.findNext')}</Link>
         </div>
+        <ShareCardSheet open={sharing} onClose={() => setSharing(false)}
+          {...stampCard({ place, count: result.totalStamps, total, date: new Date(), i18n: { t, loc, gov, isRtl } })} />
       </div>
     )
   }

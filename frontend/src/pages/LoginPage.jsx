@@ -8,7 +8,7 @@ import { problem } from '../utils/helpers'
 const SHOW_DEMO = import.meta.env.DEV || import.meta.env.VITE_DEMO === 'true'
 
 export function homeFor(role) {
-  if (role === 'Admin') return '/admin/places/new'
+  if (role === 'Admin') return '/admin/insights'
   if (role === 'Guide') return '/guide/bookings'
   return '/'
 }

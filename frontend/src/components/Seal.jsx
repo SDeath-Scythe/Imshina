@@ -1,7 +1,8 @@
 import { useId } from 'react'
 
 // Splits a place name into at most two short lines for the inside of a stamp.
-function lines(name = '') {
+// eslint-disable-next-line react-refresh/only-export-components
+export function sealLines(name = '') {
   const clean = name.replace(/\(.*?\)/g, '').trim()
   const words = clean.split(/\s+/)
   if (clean.length <= 12 || words.length === 1) return [clean.slice(0, 16)]
@@ -15,7 +16,7 @@ function lines(name = '') {
 
 /** Small passport stamp: ink rings, the place name and the date. */
 export function Seal({ name, date, ink = '#1D3A8C', rotate = -6, size = 92, label, rtl }) {
-  const [l1, l2] = lines(name)
+  const [l1, l2] = sealLines(name)
   const upper = !rtl
   // Shrink the text so the longest line always fits inside the inner ring (~62px wide).
   const longest = Math.max(l1.length, (l2 || '').length)
@@ -44,7 +45,7 @@ export function Seal({ name, date, ink = '#1D3A8C', rotate = -6, size = 92, labe
 /** The large stamp shown the moment a stamp is collected. */
 export function BigSeal({ name, ring, date, ink = '#1D3A8C', size = 250, animate, rtl }) {
   const id = useId().replace(/[^a-zA-Z0-9_-]/g, '')
-  const [l1, l2] = lines(name)
+  const [l1, l2] = sealLines(name)
   return (
     <svg width={size} height={size} viewBox="0 0 260 260" role="img" aria-label={`${name} · ${date}`} className={animate ? 'seal-anim' : ''} style={{ display: 'block', transform: animate ? undefined : 'rotate(-9deg)' }}>
       <defs><path id={`ring-${id}`} d="M130 130m-96 0a96 96 0 1 1 192 0a96 96 0 1 1-192 0" /></defs>

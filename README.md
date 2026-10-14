@@ -19,6 +19,7 @@ English and Arabic · phone-first · ASP.NET Core + React
 - [Screens](#screens)
 - [Tech stack](#tech-stack)
 - [Getting started](#getting-started)
+- [Deploying and live demos](#deploying-and-live-demos)
 - [Demo accounts](#demo-accounts)
 - [Testing the GPS stamp](#testing-the-gps-stamp)
 - [Configuration](#configuration)
@@ -36,18 +37,25 @@ Most travel apps help you plan a trip. Imshina rewards you for actually going. E
 **Travellers**
 - **Discover** 18 heritage sites across 4 cities, with history timelines, visiting tips, maps and a "find nearest" button.
 - **Collect stamps** in a digital passport. Each one is a photo taken on site, checked against your distance from the place.
+- **Share a stamp** as a story-sized image: the stamp, the place and "5 of 18", ready for Instagram or WhatsApp.
+- **Follow trails** such as *Old Baghdad* or *Heart of Babylon*, reach milestones, and earn a shareable certificate for stamping all 18 sites.
 - **Unlock rewards** from partner hotels, cafés and shops as the stamp count grows.
 - **Book local guides** by the day, or book ready-made trips. Cancel a booking yourself if plans change.
 - **Build your own trip** from the places you want to see.
 - **Tag along** with other travellers: join women-only, men-only or mixed groups, or host your own and approve who joins.
 - **Review** a guide after a completed booking.
 - **Updates** for unlocked rewards, booking decisions and group approvals.
+- **Before you go:** e-visa, money, SIM cards, shrine dress code, Arbaeen dates and emergency numbers, with sources and the date they were checked.
 
 **Guides**
 - A **Bookings** inbox: accept or decline requests, cancel before a tour starts, and mark tours completed so travellers can review them.
 - A public profile with languages, cities, price per day and reviews.
 
-**Agencies** host travel groups. **Admins** add new places, with the stamp zone picked on a map.
+**Agencies** host travel groups.
+
+**Admins and tourism authorities**
+- **Insights:** stamps per site and city, where travellers come from, stamps per day and the busiest days of the week. Totals only; no traveller's name, email or photo is shown.
+- Add new places, with the stamp zone picked on a map or set from where you're standing.
 
 ## How a stamp is verified
 
@@ -62,6 +70,10 @@ Most travel apps help you plan a trip. Imshina rewards you for actually going. E
 ![Passport, booking a guide by date, the guide's booking inbox, and the passport in Arabic](docs/screenshots/screens.png)
 
 Passport with per-city progress · booking a guide for two days · a guide's booking requests · the same passport in Arabic (right to left)
+
+![A shareable stamp card, trails in the passport, the insights page for tourism authorities, and the Before you go page](docs/screenshots/features.png)
+
+Share card for Instagram stories · trails · insights for tourism authorities (example numbers) · Before you go
 
 ## Tech stack
 
@@ -99,6 +111,12 @@ Open **http://localhost:5173**. The app talks to `http://localhost:5000/api` by 
 
 In VS Code, the tasks **Run API** and **Run frontend** do the same thing (Terminal → Run Task).
 
+## Deploying and live demos
+
+Phones only allow GPS and the camera on HTTPS, so stamping on a real phone needs the app hosted. The repo includes a `Dockerfile` for the API and a Render Blueprint (`render.yaml`) that deploys both parts. **[docs/DEPLOY.md](docs/DEPLOY.md)** walks through it, including the free-plan caveat.
+
+For a pitch or a hackathon, judges won't be standing at a heritage site, so the API can add a **demo stamp at your venue** from settings alone (`DemoVenue:*`). Present, collect a real GPS-checked stamp on stage, and share the card. The checklist is in DEPLOY.md.
+
 ## Demo accounts
 
 The seed creates these accounts for local development. All of them use the password **`Demo@1234`**.
@@ -130,6 +148,7 @@ The demo traveller starts with a few past guide bookings, including one finished
 | `Seed:Enabled` | `appsettings.json` | Adds the demo places, accounts and bookings on start. Turn it off for anything public. |
 | `Cors:Origins` | `appsettings.json` | Web app addresses allowed to call the API. |
 | `ConnectionStrings:DefaultConnection` | `appsettings.json` | SQLite file path. |
+| `DemoVenue:Enabled`, `Latitude`, `Longitude`, `RadiusMeters`, `Name`, `NameAr`, `Governorate` | `appsettings.json` or `DemoVenue__…` variables | Adds a stamp place at a demo venue. Turning it off again removes the place and its stamps. |
 | `VITE_API_URL` | `frontend/.env` | API base URL, including `/api`. |
 | `VITE_DEMO` | `frontend/.env` | `true` shows the demo login buttons outside development. |
 
@@ -161,6 +180,7 @@ dotnet user-secrets set "Jwt:Key" "<a long random string, 32+ characters>"
 | GET | `/api/passport/me`, `/api/rewards` | traveller |
 | GET / POST | `/api/admin-setup/status`, `/api/admin-setup` | first admin only |
 | POST | `/api/admin/places` | admin |
+| GET | `/api/admin/insights` | admin (totals only) |
 
 Errors use the standard `ProblemDetails` format. A refused stamp includes `distanceMeters` and `allowedRadiusMeters`, so the app can say how far away the traveller is.
 
@@ -181,8 +201,8 @@ A guide can't be booked for dates that overlap another pending or confirmed book
 ```
 backend/TourIraq.Api/
 ├── Controllers/   Auth, Places, Governorates, Guides, GuideBookings, Bookings, Trips,
-│                  Groups, Stamps, Passport, Rewards, AdminPlaces, AdminSetup
-├── Data/          AppDbContext, SeedData (18 places, guides, trips, groups, rewards)
+│                  Groups, Stamps, Passport, Rewards, AdminPlaces, AdminInsights, AdminSetup
+├── Data/          AppDbContext, SeedData (18 places, guides, trips, groups, rewards), DemoVenue
 ├── DTOs/          request and response shapes (entities are never returned directly)
 ├── Migrations/    EF Core migrations
 ├── Models/        entities and enums
@@ -192,10 +212,18 @@ frontend/src/
 ├── api/           Axios client and data hooks
 ├── components/    UI kit, icons, map, calendar, passport stamps
 ├── context/       auth, language, location, toasts
+├── data/          trails and milestones, the "Before you go" facts
 ├── hooks/         cached queries, updates
 ├── i18n/          English and Arabic text
 ├── layouts/       tab bar on phones, side rail on desktop
-└── pages/         one file per screen
+├── pages/         one file per screen
+└── utils/         helpers, share-card drawing
+
+docs/
+├── DEPLOY.md      hosting, settings, live demo checklist
+├── PLACES.md      how each place's coordinates were checked
+├── ROADMAP.md     what's next, and what still needs checking
+└── screenshots/
 ```
 
 ## Design
@@ -213,9 +241,10 @@ All design tokens are in `frontend/src/index.css`, and icons are one inline set 
 
 This is a hackathon MVP, built for the Culture & Tourism Hackathon in Iraq.
 
-- **Not compiled yet:** the newest backend code (the guide booking inbox and traveller cancelling) hasn't been built. If `dotnet build` reports an error, it will be in `GuideBookingsController.cs` or the cancel action in `BookingsController.cs`.
+- **Not compiled yet:** the newest backend code hasn't been built: the guide booking inbox, traveller cancelling, insights, the demo venue and the coordinate fix. The files are listed in [ROADMAP.md](docs/ROADMAP.md#1-build-and-test-the-backend). None of them change the database schema.
 - **Ready-made trip bookings** stay pending, because trips don't have an owner who could confirm them yet.
-- **Place coordinates are approximate,** and no photos are bundled: cards use category colours and icons. Check the coordinates on a map before a live demo. Archaeological sites use larger stamp zones (300–500 m) because they're big.
+- **Coordinates:** 12 of the 18 places were corrected from public sources in October 2026 (some were over a kilometre off). Six still need checking on a map; see [PLACES.md](docs/PLACES.md).
+- **No photos yet:** place cards use category colours and icons.
 - **Anti-cheating is basic.** Fake-GPS apps, modified clients or re-used photos can still fool it. The live camera, the server-side distance check and one stamp per place are deterrents, not proof.
 - **Login tokens live in `localStorage`,** which an XSS bug could expose. Fine for an MVP; use httpOnly cookies with refresh tokens later.
 - **Gender rules** for groups rely on the gender in the account. There's no identity check, reporting or blocking yet.
@@ -224,4 +253,4 @@ This is a hackathon MVP, built for the Culture & Tourism Hackathon in Iraq.
 
 ## Roadmap
 
-QR-code stamps for indoor sites, offline mode, audio guides, place photos in cloud storage, a guide calendar, trip owners for ready-made trips, refresh tokens, identity checks, reporting and blocking, seasonal events such as Arbaeen, and agency analytics.
+Next up are real photos of the places, stories that unlock only on site, reward redemption by partners (scan a QR code), and the rest of Tag along: group messages, report and block. Then notifications, offline mode and payments. Each item, with what it needs, is in **[docs/ROADMAP.md](docs/ROADMAP.md)**.

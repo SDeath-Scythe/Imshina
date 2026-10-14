@@ -24,6 +24,7 @@ function navFor(role) {
   ]
   if (role === 'Admin') return [
     { to: '/', icon: 'compass', label: 'nav.discover', end: true },
+    { to: '/admin/insights', icon: 'chart', label: 'nav.insights' },
     { to: '/admin/places/new', icon: 'admin', label: 'nav.addPlace' },
     { to: '/guides', icon: 'guide', label: 'nav.guides' },
     { to: '/profile', icon: 'user', label: 'nav.me' },

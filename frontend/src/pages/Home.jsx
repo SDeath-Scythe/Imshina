@@ -132,6 +132,13 @@ export default function Home() {
           <Icon name="forward" className="flip-rtl faint" />
         </Link>
       )}
+      {(!user || user.role === 'Tourist') && (
+        <Link to="/practical" className="card card-link card-pad row" style={{ '--gap': '14px' }}>
+          <span style={{ width: 48, height: 48, flexShrink: 0, borderRadius: 24, background: 'var(--lapis-soft)', color: 'var(--lapis)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}><Icon name="shield" size={22} /></span>
+          <span className="grow stack" style={{ '--gap': '2px' }}><b>{t('practical.title')}</b><span className="small muted">{t('practical.cardText')}</span></span>
+          <Icon name="forward" className="flip-rtl faint" />
+        </Link>
+      )}
       {user?.role === 'Guide' && (
         <Link to={`/guides/${user.id}`} className="card card-link card-pad row" style={{ '--gap': '14px' }}>
           <Icon name="guide" size={26} style={{ color: 'var(--lapis)' }} />

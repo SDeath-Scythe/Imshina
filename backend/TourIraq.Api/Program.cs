@@ -77,6 +77,7 @@ using (var scope = app.Services.CreateScope())
     {
         await SeedData.InitializeAsync(db);
     }
+    await DemoVenue.ApplyAsync(db, app.Configuration); // optional stamp place for live demos
 }
 
 // ---- Pipeline ----

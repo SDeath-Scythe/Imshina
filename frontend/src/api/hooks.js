@@ -55,3 +55,6 @@ export const useAdminSetupStatus = () => useQuery('admin-setup', async () => (aw
 
 // A guide's booking inbox (requests travellers sent them).
 export const useGuideBookings = () => useUserQuery('guide-bookings', ['Guide'], async () => (await api.get('/guide/bookings')).data)
+
+// Visitor numbers for admins (aggregates only).
+export const useInsights = () => useUserQuery('insights', ['Admin'], async () => (await api.get('/admin/insights')).data)

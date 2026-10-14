@@ -135,6 +135,7 @@ public static class SeedData
         if (await db.Governorates.AnyAsync())
         {
             await BackfillArabicDescriptionsAsync(db);
+            await FixPlaceCoordinatesAsync(db);
             return;
         }
 
@@ -214,7 +215,7 @@ public static class SeedData
         }
 
         // ---------------- Baghdad ----------------
-        var kadhimiya = P(baghdad, "Al-Kadhimiya Shrine", "مرقد الإمامين الكاظمين", PlaceCategory.Religious, 33.3795, 44.3420, 150,
+        var kadhimiya = P(baghdad, "Al-Kadhimiya Shrine", "مرقد الإمامين الكاظمين", PlaceCategory.Religious, 33.3800, 44.3381, 150,
             "Golden-domed shrine of Imam Musa al-Kadhim and Imam Muhammad al-Jawad.",
             "Al-Kadhimiya is a revered Shia shrine complex in northern Baghdad. It holds the tombs of Imam Musa al-Kadhim, the seventh Imam, and his grandson Imam Muhammad al-Jawad, the ninth Imam. The complex is known for its gilded domes, tall minarets and richly decorated courtyards, and it remains an active place of pilgrimage.",
             modest + " " + general, "Non-Muslim visitors should ask staff about access rules. Visiting early in the morning is usually calmer.");
@@ -222,7 +223,7 @@ public static class SeedData
             "The seventh Imam died in Baghdad and was buried here.",
             "Imam Musa al-Kadhim died in Baghdad in 799 CE (183 AH) and was buried in the cemetery that later grew into the Kadhimiya district. His grandson Imam Muhammad al-Jawad was buried beside him in 835 CE, which is why the shrine is known as the shrine of the 'two Kadhimayn' Imams."));
 
-        var mustansiriya = P(baghdad, "Al-Mustansiriya School", "المدرسة المستنصرية", PlaceCategory.Heritage, 33.3408, 44.3896, 150,
+        var mustansiriya = P(baghdad, "Al-Mustansiriya School", "المدرسة المستنصرية", PlaceCategory.Heritage, 33.3385, 44.3896, 150,
             "A 13th-century Abbasid college, one of the oldest universities in the world.",
             "Founded by the Abbasid caliph al-Mustansir, the Mustansiriya was a major centre of learning that taught Islamic law across the four Sunni schools and other subjects. Its brick facade, inscriptions and central courtyard are among the finest surviving examples of late Abbasid architecture in Baghdad.",
             general, "Ask permission before photographing inside; parts of the building may be closed to visitors.");
@@ -230,7 +231,7 @@ public static class SeedData
             "Construction began under Caliph al-Mustansir.",
             "Construction of the Mustansiriya began in 1227 CE and the college opened in the early 1230s. It stood near the Tigris and attracted students and scholars from across the Islamic world until the Mongol conquest of Baghdad in 1258."));
 
-        var abbasidPalace = P(baghdad, "Abbasid Palace", "القصر العباسي", PlaceCategory.Archaeological, 33.3405, 44.3910, 150,
+        var abbasidPalace = P(baghdad, "Abbasid Palace", "القصر العباسي", PlaceCategory.Archaeological, 33.3431, 44.3835, 150,
             "A rare surviving Abbasid-era palace building near the Tigris.",
             "The Abbasid Palace is one of very few Abbasid buildings in Baghdad to survive in a recognisable form. Its vaulted halls, courtyards and brickwork show the architectural style of the late Abbasid period.",
             general, "Scholars debate the exact date and original use of the building, so guides may offer different accounts.");
@@ -246,7 +247,7 @@ public static class SeedData
             "Named for the celebrated poet who died in 965 CE.",
             "Abu al-Tayyib al-Mutanabbi is among the most celebrated poets in Arabic literature and died in 965 CE. The street carries his name as a symbol of Baghdad's long literary tradition."));
 
-        var museum = P(baghdad, "Iraq National Museum", "المتحف الوطني العراقي", PlaceCategory.Heritage, 33.3267, 44.3728, 150,
+        var museum = P(baghdad, "Iraq National Museum", "المتحف الوطني العراقي", PlaceCategory.Heritage, 33.3283, 44.3854, 150,
             "The world's most important collection of Mesopotamian antiquities.",
             "The Iraq Museum holds treasures from Sumer, Akkad, Babylon and Assyria, including cuneiform tablets, royal artefacts and monumental sculpture spanning thousands of years of human history.",
             general, "Check opening days and ticketing in advance; the museum sometimes opens by appointment for groups.");
@@ -255,7 +256,7 @@ public static class SeedData
             "The museum was looted in April 2003 during the Iraq war, and thousands of objects were stolen. Many were later recovered with international help. The museum reopened to the public in 2015."));
 
         // ---------------- Najaf ----------------
-        var imamAli = P(najaf, "Imam Ali Shrine", "مرقد الإمام علي بن أبي طالب", PlaceCategory.Religious, 32.0003, 44.3144, 150,
+        var imamAli = P(najaf, "Imam Ali Shrine", "مرقد الإمام علي بن أبي طالب", PlaceCategory.Religious, 31.9959, 44.3146, 150,
             "The golden-domed shrine of Imam Ali, centre of the holy city of Najaf.",
             "The Imam Ali Shrine is one of the holiest sites in Shia Islam, holding the tomb of Imam Ali ibn Abi Talib, cousin and son-in-law of the Prophet Muhammad and the first Shia Imam. Its golden dome, tiled iwans and mirrored halls draw millions of pilgrims each year.",
             modest + " " + general, "Non-Muslim visitors should ask security about access rules. Bags and phones may be restricted at entrances.");
@@ -263,7 +264,7 @@ public static class SeedData
             "Imam Ali died in 661 CE and was buried at Najaf.",
             "Imam Ali was attacked in Kufa in 661 CE (40 AH) and died of his wounds. According to Shia tradition he was buried in secret at the site that became Najaf, which grew into a major pilgrimage city around his tomb."));
 
-        var wadi = P(najaf, "Wadi al-Salam Cemetery", "مقبرة وادي السلام", PlaceCategory.Religious, 32.0100, 44.3000, 500,
+        var wadi = P(najaf, "Wadi al-Salam Cemetery", "مقبرة وادي السلام", PlaceCategory.Religious, 32.0172, 44.2975, 500,
             "One of the largest cemeteries in the world, beside the Imam Ali Shrine.",
             "Wadi al-Salam, the Valley of Peace, stretches over a vast area north of the Imam Ali Shrine. Muslims from many countries have chosen to be buried here for centuries, which makes it one of the largest cemeteries in the world.",
             "Treat the cemetery with great respect. Do not photograph mourners or funerals. " + general, "Visit with a local guide who can explain the customs and the history of the cemetery.");
@@ -271,7 +272,7 @@ public static class SeedData
             "Burials here continue today after many centuries.",
             "Because of its closeness to the tomb of Imam Ali, many believers have wished to be buried in Wadi al-Salam. Its exact age is hard to pin down, and burials continue to this day."));
 
-        var kufa = P(najaf, "Great Mosque of Kufa", "مسجد الكوفة", PlaceCategory.Religious, 32.0280, 44.3998, 150,
+        var kufa = P(najaf, "Great Mosque of Kufa", "مسجد الكوفة", PlaceCategory.Religious, 32.0286, 44.4008, 150,
             "One of the oldest mosques in the world, in the early Islamic garrison city of Kufa.",
             "The Great Mosque of Kufa was founded in the early years of Islam, when Kufa was established as a garrison city. It is associated with Imam Ali, who made Kufa his capital, and contains several revered shrines and prayer places.",
             modest + " " + general, "Ask staff to point out the main prayer spaces and their associated traditions.");
@@ -279,7 +280,7 @@ public static class SeedData
             "Established soon after the founding of Kufa.",
             "Kufa was established around 638 CE (17 AH) and its first mosque was built at the centre of the new city. In 656 CE Imam Ali made Kufa the capital of the caliphate. According to tradition, he was attacked while praying here in 661 CE."));
 
-        var najafOld = P(najaf, "Najaf Old City", "مدينة النجف القديمة", PlaceCategory.Heritage, 32.0008, 44.3135, 150,
+        var najafOld = P(najaf, "Najaf Old City", "مدينة النجف القديمة", PlaceCategory.Heritage, 31.9959, 44.3146, 450,
             "Narrow lanes, bazaars and seminaries around the Imam Ali Shrine.",
             "The old city of Najaf surrounds the shrine with winding alleys, traditional markets and religious schools. It is a living centre of scholarship where students and clerics have studied for centuries.",
             modest + " " + general, "The bazaars are a good place to buy prayer beads, dates and local sweets. Bargain politely.");
@@ -296,7 +297,7 @@ public static class SeedData
             "Imam Husayn and his companions were killed on 10 Muharram, 61 AH.",
             "In 680 CE (10 Muharram, 61 AH) Imam Husayn ibn Ali and a small group of family and companions were killed near Karbala by forces of the Umayyad caliph Yazid I. The event is commemorated every year on Ashura, and the Arbaeen pilgrimage takes place forty days later."));
 
-        var abbas = P(karbala, "Al-Abbas Shrine", "مرقد العباس بن علي", PlaceCategory.Religious, 32.6195, 44.0305, 150,
+        var abbas = P(karbala, "Al-Abbas Shrine", "مرقد العباس بن علي", PlaceCategory.Religious, 32.6172, 44.0362, 150,
             "Shrine of Abbas ibn Ali, Imam Husayn's half-brother and standard-bearer.",
             "The Al-Abbas Shrine stands a short walk from the Imam Husayn Shrine. It honours Abbas ibn Ali, the half-brother of Imam Husayn, remembered for his loyalty and courage at Karbala. The shrine is known for its mirrored interiors and gilded dome.",
             modest + " " + general, "The walk between the two shrines is a popular part of the pilgrimage experience.");
@@ -304,7 +305,7 @@ public static class SeedData
             "Abbas ibn Ali carried the standard and was killed at Karbala.",
             "Abbas ibn Ali is remembered as the standard-bearer of Imam Husayn's camp, and was killed in the Battle of Karbala in 680 CE."));
 
-        var ukhaidir = P(karbala, "Al-Ukhaidir Fortress", "قصر الأخيضر", PlaceCategory.Archaeological, 32.4700, 43.5750, 500,
+        var ukhaidir = P(karbala, "Al-Ukhaidir Fortress", "قصر الأخيضر", PlaceCategory.Archaeological, 32.4377, 43.6013, 500,
             "A fortified Abbasid palace in the desert south-west of Karbala.",
             "Al-Ukhaidir is a large, remarkably well-preserved fortified palace in the desert. Its massive walls, towers, vaulted halls and courtyards make it one of the best-preserved early Abbasid buildings in Iraq.",
             "The site is remote and in open desert. Go with a guide and a driver who knows the route, carry water, and avoid the midday heat. " + general,
@@ -314,7 +315,7 @@ public static class SeedData
             "The fortress is generally dated to about 775 CE and is attributed to Isa ibn Musa, a nephew of the Abbasid caliph al-Mansur. Its exact purpose, whether palace, fort or caravan stop, is still discussed by scholars."));
 
         // ---------------- Babylon ----------------
-        var babylonSite = P(babylon, "Ancient City of Babylon", "مدينة بابل الأثرية", PlaceCategory.Archaeological, 32.5364, 44.4206, 500,
+        var babylonSite = P(babylon, "Ancient City of Babylon", "مدينة بابل الأثرية", PlaceCategory.Archaeological, 32.5425, 44.4211, 500,
             "The ruins of the capital of Hammurabi and Nebuchadnezzar II, a UNESCO World Heritage Site.",
             "Babylon was one of the great cities of the ancient world. Visitors can walk through reconstructed walls and gates, processional ways and palace courtyards at the site beside the Euphrates. Babylon was inscribed on UNESCO's World Heritage List in 2019.",
             "Large open site with little shade; bring water, sun protection and walking shoes. " + general,
@@ -326,7 +327,7 @@ public static class SeedData
             "Nebuchadnezzar II reigned from 605 to 562 BCE and transformed the city.",
             "Nebuchadnezzar II built or rebuilt palaces, temples, walls and the Processional Way. The famous Hanging Gardens are described by Greek writers, but their existence and location have not been confirmed archaeologically."));
 
-        var ishtar = P(babylon, "Ishtar Gate (Reconstruction)", "بوابة عشتار", PlaceCategory.Archaeological, 32.5415, 44.4210, 400,
+        var ishtar = P(babylon, "Ishtar Gate (Reconstruction)", "بوابة عشتار", PlaceCategory.Archaeological, 32.5433, 44.4223, 400,
             "A reconstruction of the glazed-brick gateway to ancient Babylon.",
             "The original Ishtar Gate was built around 575 BCE under Nebuchadnezzar II and decorated with blue glazed bricks and reliefs of dragons and bulls. Much of the original is now in the Pergamon Museum in Berlin; a reconstruction stands at the site in Iraq.",
             "Uneven ground and strong sun; wear sturdy shoes. " + general, "Look for the animal reliefs (bulls and dragons) on the walls of the reconstructed gate.");
@@ -334,7 +335,7 @@ public static class SeedData
             "Built around 575 BCE as a ceremonial entrance to the city.",
             "The gate led onto the Processional Way, along which the statues of gods were carried during the New Year festival."));
 
-        var palace = P(babylon, "Nebuchadnezzar's Southern Palace", "قصر نبوخذنصر الجنوبي", PlaceCategory.Archaeological, 32.5360, 44.4205, 400,
+        var palace = P(babylon, "Nebuchadnezzar's Southern Palace", "قصر نبوخذنصر الجنوبي", PlaceCategory.Archaeological, 32.5428, 44.4205, 400,
             "Large palace complex of Nebuchadnezzar II with courtyards and throne room.",
             "The Southern Palace was the main royal residence and administrative centre of Neo-Babylonian Babylon. Its courtyards and the large throne room give a sense of the scale of royal power in the 6th century BCE.",
             "Large open site; bring water. " + general, "Part of the palace has been rebuilt in modern times; ask guides to distinguish original and reconstructed brickwork.");
@@ -342,7 +343,7 @@ public static class SeedData
             "The seat of Nebuchadnezzar II's government.",
             "Built and expanded during the reign of Nebuchadnezzar II, the palace complex was a political and ceremonial centre of the Neo-Babylonian empire."));
 
-        var lion = P(babylon, "Lion of Babylon", "أسد بابل", PlaceCategory.Archaeological, 32.5385, 44.4190, 300,
+        var lion = P(babylon, "Lion of Babylon", "أسد بابل", PlaceCategory.Archaeological, 32.5450, 44.4213, 300,
             "An ancient basalt lion statue standing within the Babylon site.",
             "The Lion of Babylon is a large basalt sculpture of a lion standing over a human figure, found at Babylon and dated to the Neo-Babylonian period. It remains one of the best-known images of the city.",
             "Large open site; bring water. " + general, "Often used as a landmark for photos; consider visiting early to avoid crowds.");
@@ -350,7 +351,7 @@ public static class SeedData
             "A famous sculpture from Babylon.",
             "The statue's original purpose is still discussed by scholars; interpretations include a symbol of royal power or a protective monument."));
 
-        var borsippa = P(babylon, "Borsippa (Birs Nimrud)", "برس نمرود (بورسيبا)", PlaceCategory.Archaeological, 32.3858, 44.3503, 500,
+        var borsippa = P(babylon, "Borsippa (Birs Nimrud)", "برس نمرود (بورسيبا)", PlaceCategory.Archaeological, 32.3920, 44.3417, 500,
             "An ancient city with a ziggurat dedicated to the god Nabu, near Hillah.",
             "Borsippa was a sister city of Babylon. Its tall mound, known as Birs Nimrud, preserves the remains of the Ezida temple complex and ziggurat of the god Nabu. The site has long been linked in local tradition with the Tower of Babel.",
             "Remote mound site with uneven ground; go with a guide and bring water. " + general, "The link to the Tower of Babel is a tradition rather than an archaeological finding.");
@@ -358,7 +359,7 @@ public static class SeedData
             "Ezida, the temple of Nabu, was a major religious centre.",
             "Borsippa's temple of Nabu was linked to the cult of Marduk in Babylon, and the two cities were closely connected in religious festivals."));
 
-        var kish = P(babylon, "Kish (Tell Uhaimir)", "كيش (تل الأحيمر)", PlaceCategory.Archaeological, 32.5500, 44.6200, 500,
+        var kish = P(babylon, "Kish (Tell Uhaimir)", "كيش (تل الأحيمر)", PlaceCategory.Archaeological, 32.5403, 44.6047, 500,
             "A very early Sumerian city whose rulers were remembered in the Sumerian King List.",
             "Kish was one of the oldest and most important cities of ancient Mesopotamia. The mounds at Tell Uhaimir and nearby tells contain remains of palaces, temples and a ziggurat from the third millennium BCE.",
             "Remote archaeological mounds with limited facilities; go with a guide. " + general, "Best for travellers with a strong interest in early Mesopotamian history.");
@@ -371,6 +372,42 @@ public static class SeedData
             babylonSite, ishtar, palace, lion, borsippa, kish);
         await db.SaveChangesAsync();
 
+    }
+
+    // Coordinates checked against Wikipedia and Vici.org in Oct 2026 (see docs/PLACES.md).
+    // Databases created before then hold positions up to 4 km off, which made stamping fail on site.
+    // A radius of 0 keeps the existing radius.
+    private static readonly Dictionary<string, (double Lat, double Lng, int Radius)> CheckedCoordinates = new()
+    {
+        ["Al-Kadhimiya Shrine"] = (33.3800, 44.3381, 0),
+        ["Al-Mustansiriya School"] = (33.3385, 44.3896, 0),
+        ["Abbasid Palace"] = (33.3431, 44.3835, 0),
+        ["Iraq National Museum"] = (33.3283, 44.3854, 0),
+        ["Imam Ali Shrine"] = (31.9959, 44.3146, 0),
+        ["Wadi al-Salam Cemetery"] = (32.0172, 44.2975, 0),
+        ["Great Mosque of Kufa"] = (32.0286, 44.4008, 0),
+        ["Najaf Old City"] = (31.9959, 44.3146, 450),
+        ["Al-Abbas Shrine"] = (32.6172, 44.0362, 0),
+        ["Al-Ukhaidir Fortress"] = (32.4377, 43.6013, 0),
+        ["Ancient City of Babylon"] = (32.5425, 44.4211, 0),
+        ["Ishtar Gate (Reconstruction)"] = (32.5433, 44.4223, 0),
+        ["Nebuchadnezzar's Southern Palace"] = (32.5428, 44.4205, 0),
+        ["Lion of Babylon"] = (32.5450, 44.4213, 0),
+        ["Borsippa (Birs Nimrud)"] = (32.3920, 44.3417, 0),
+        ["Kish (Tell Uhaimir)"] = (32.5403, 44.6047, 0),
+    };
+
+    private static async Task FixPlaceCoordinatesAsync(AppDbContext db)
+    {
+        var names = CheckedCoordinates.Keys.ToList();
+        foreach (var place in await db.Places.Where(p => names.Contains(p.Name)).ToListAsync())
+        {
+            var (lat, lng, radius) = CheckedCoordinates[place.Name];
+            place.Latitude = lat;
+            place.Longitude = lng;
+            if (radius > 0) place.StampRadiusMeters = radius;
+        }
+        await db.SaveChangesAsync();
     }
 
     private static async Task BackfillArabicDescriptionsAsync(AppDbContext db)

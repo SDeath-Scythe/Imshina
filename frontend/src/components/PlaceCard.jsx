@@ -1,3 +1,4 @@
+import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import Icon, { CATEGORY_ICON } from './Icon'
 import { useI18n } from '../i18n/I18nContext'
@@ -7,10 +8,12 @@ export const CATEGORY_TINT = { Archaeological: '#2A4DA6', Religious: '#0F5E54', 
 
 /** A place's photo, or a glazed-brick tile in its category colour when there is none. */
 export function PlaceArt({ place, className = 'tile', iconSize = 22, children }) {
-  const img = imageUrl(place?.coverImageUrl)
+  const src = imageUrl(place?.coverImageUrl)
+  const [failed, setFailed] = useState(null) // the URL that failed to load, so a new URL gets a fresh try
+  const img = src && failed !== src ? src : null
   return (
     <span className={`${className} bricks-sm`} style={{ '--brick': CATEGORY_TINT[place?.category] || '#2A4DA6' }}>
-      {img ? <img src={img} alt="" loading="lazy" /> : <Icon name={CATEGORY_ICON[place?.category] || 'pin'} size={iconSize} stroke={1.6} />}
+      {img ? <img src={img} alt="" loading="lazy" onError={() => setFailed(src)} /> : <Icon name={CATEGORY_ICON[place?.category] || 'pin'} size={iconSize} stroke={1.6} />}
       {children}
     </span>
   )

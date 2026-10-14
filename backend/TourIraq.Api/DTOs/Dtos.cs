@@ -385,3 +385,49 @@ public class RewardDto
     public DateTime? ExpiresAt { get; set; }
     public bool IsUnlocked { get; set; }
 }
+
+// ---------- Insights (admin) ----------
+// Aggregates only: no names, emails or photos of travellers leave the server.
+public class InsightsDto
+{
+    public InsightsTotals Totals { get; set; } = new();
+    public List<PlaceStat> Places { get; set; } = new();
+    public List<NamedCount> Governorates { get; set; } = new();
+    public List<NamedCount> Countries { get; set; } = new();
+    public List<DayCount> Days { get; set; } = new();       // last 30 days, oldest first
+    public int[] Weekdays { get; set; } = new int[7];        // stamps by day of week, Sunday first
+}
+
+public class InsightsTotals
+{
+    public int Stamps { get; set; }
+    public int Travellers { get; set; }            // travellers with at least one stamp
+    public int RegisteredTravellers { get; set; }
+    public int Guides { get; set; }
+    public int Bookings { get; set; }
+    public int ConfirmedBookings { get; set; }
+    public int CompletedBookings { get; set; }
+    public int RewardsUnlocked { get; set; }
+}
+
+public class PlaceStat
+{
+    public int PlaceId { get; set; }
+    public string Name { get; set; } = string.Empty;
+    public string NameAr { get; set; } = string.Empty;
+    public string Governorate { get; set; } = string.Empty;
+    public int Stamps { get; set; }
+}
+
+public class NamedCount
+{
+    public string Name { get; set; } = string.Empty;
+    public string? NameAr { get; set; }
+    public int Count { get; set; }
+}
+
+public class DayCount
+{
+    public DateOnly Date { get; set; }
+    public int Count { get; set; }
+}

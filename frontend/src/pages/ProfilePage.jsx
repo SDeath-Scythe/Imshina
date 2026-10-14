@@ -93,7 +93,13 @@ export default function ProfilePage() {
             <MenuLink to="/groups/new" icon="plus" label={t('groups.start')} />
           </>
         )}
-        {role === 'Admin' && <MenuLink to="/admin/places/new" icon="admin" label={t('nav.addPlace')} />}
+        {role === 'Admin' && (
+          <>
+            <MenuLink to="/admin/insights" icon="chart" label={t('nav.insights')} />
+            <MenuLink to="/admin/places/new" icon="admin" label={t('nav.addPlace')} />
+          </>
+        )}
+        <MenuLink to="/practical" icon="shield" label={t('practical.title')} />
         <MenuLink to="/updates" icon="bell" label={t('nav.updates')} meta={unread ? t('updates.unread', { n: unread }) : ''} />
       </nav>
 
