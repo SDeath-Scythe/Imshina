@@ -1,43 +1,10 @@
-# Render Blueprint: the API (Docker) and the web app (static site).
-# New → Blueprint in the Render dashboard, pick this repo, then fill in the values marked sync: false.
-# See docs/DEPLOY.md for the steps and the free-plan caveat.
 services:
   - type: web
-    name: imshina-api
-    runtime: docker
-    rootDir: backend/TourIraq.Api
-    dockerfilePath: ./Dockerfile
-    plan: free            # free resets the database on every restart; use starter + the disk below to keep data
-    healthCheckPath: /api/governorates
+    name: tripguide
+    runtime: node
+    plan: free
+    buildCommand: npm install && npm run build
+    startCommand: node dist/server.mjs
     envVars:
-      - key: Jwt__Key
-        generateValue: true
-      - key: Cors__Origins__0
-        value: https://imshina-web.onrender.com
-      - key: Seed__Enabled
-        value: "true"
-      - key: AdminSetup__Token
-        sync: false
-      - key: DemoVenue__Enabled
-        value: "false"
-    # To keep stamps, accounts and photos between restarts (paid plans only):
-    # disk:
-    #   name: imshina-data
-    #   mountPath: /data
-    #   sizeGB: 1
-
-  - type: web
-    name: imshina-web
-    runtime: static
-    rootDir: frontend
-    buildCommand: npm ci && npm run build
-    staticPublishPath: dist
-    routes:
-      - type: rewrite
-        source: /*
-        destination: /index.html
-    envVars:
-      - key: VITE_API_URL
-        value: https://imshina-api.onrender.com/api
-      - key: VITE_DEMO
-        value: "true"
+      - key: NODE_VERSION
+        value: "22"
