@@ -21,14 +21,14 @@ function Collage() {
         <span className="tape" style={{ [rtl ? 'right' : 'left']: '32%', transform: 'rotate(4deg)' } as React.CSSProperties} />
       </div>
       <div className="photo" style={{ ...side('34%' as any), top: '17%', width: '34%', height: '59%', transform: `rotate(${rtl ? -3 : 3}deg)` }}>
-        <img src={asset('malwiya.jpg')} alt={t('home.alt_malwiya')} />
+        <img src={asset('babylon.jpg')} alt={t('home.alt_babylon')} />
         <span className="tape gold" style={{ [rtl ? 'right' : 'left']: '30%', transform: 'rotate(-6deg)' } as React.CSSProperties} />
       </div>
       <div className="photo" style={{ ...other(16), top: 10, width: '33%', height: '54%', transform: `rotate(${rtl ? -6 : 6}deg)` }}>
         <img src={asset('arch.jpg')} alt={t('home.alt_arch')} />
         <span className="tape" style={{ [rtl ? 'right' : 'left']: '28%', transform: 'rotate(-3deg)' } as React.CSSProperties} />
       </div>
-      <img src={asset('logo-mark.png')} alt="" style={{ position: 'absolute', ...other(22), top: '66%', width: 44, height: 44, transform: 'rotate(-8deg)' }} />
+      <img src={asset('tg-mark.svg')} alt="" style={{ position: 'absolute', ...other(20), top: '68%', width: 56, height: 'auto', transform: 'rotate(-8deg)' }} />
     </section>
   );
 }

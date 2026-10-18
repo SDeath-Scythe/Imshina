@@ -86,18 +86,17 @@ Other guides: `ali@`, `omar@`, `noor@`, `hussein@`, `sara@`, `yousif@`, `layla@`
 
 ## Fonts
 
-The design uses **Thmanyah Serif Display** for headings and **Thmanyah Sans** for text. Their licence does not allow redistributing the files, so they are **not in this repository**. Download them from [font.thmanyah.com](https://font.thmanyah.com) and copy these files into `public/fonts/`:
+The design uses **Thmanyah Sans** throughout, as the brand guide does: Black and Bold for headings, Regular and Medium for text. Their licence does not allow redistributing the files, so they are **not in this repository**. Download them from [font.thmanyah.com](https://font.thmanyah.com) and copy these files into `public/fonts/`:
 
 ```
-thmanyahserifdisplay-Black.woff2   thmanyahserifdisplay-Bold.woff2
-thmanyahsans-Regular.woff2   thmanyahsans-Medium.woff2   thmanyahsans-Bold.woff2
+thmanyahsans-Regular.woff2   thmanyahsans-Medium.woff2   thmanyahsans-Bold.woff2   thmanyahsans-Black.woff2
 ```
 
 Without them the app falls back to system fonts. Check the licence terms before hosting the fonts on a public website.
 
 ## Rename the app
 
-The name is set in one place: `src/config/brand.ts` (`name`, `nameAr`, `wordmark`, `tagline`). The logo files are `public/img/logo-mark.png` and `public/img/logo-full.png`; icons are `public/favicon.png`, `public/apple-touch-icon.png` and `public/icon-512.png`.
+The name is set in one place: `src/config/brand.ts` (`name`, `nameAr`, `tagline`). The logo files are in `public/img`: `tg-logo-horizontal.svg` (header), `tg-logo-stacked.svg` (sign-in), `tg-mark.svg` (the bird alone), and `-white` versions for dark backgrounds. Icons are `public/favicon.png`, `public/apple-touch-icon.png` and `public/icon-512.png`.
 
 ## Settings
 

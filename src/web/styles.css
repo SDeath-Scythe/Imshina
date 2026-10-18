@@ -1,5 +1,4 @@
-@font-face { font-family: 'Thmanyah Display'; src: url('/fonts/thmanyahserifdisplay-Black.woff2') format('woff2'); font-weight: 900; font-display: swap; }
-@font-face { font-family: 'Thmanyah Display'; src: url('/fonts/thmanyahserifdisplay-Bold.woff2') format('woff2'); font-weight: 700; font-display: swap; }
+@font-face { font-family: 'Thmanyah Sans'; src: url('/fonts/thmanyahsans-Black.woff2') format('woff2'); font-weight: 900; font-display: swap; }
 @font-face { font-family: 'Thmanyah Sans'; src: url('/fonts/thmanyahsans-Regular.woff2') format('woff2'); font-weight: 400; font-display: swap; }
 @font-face { font-family: 'Thmanyah Sans'; src: url('/fonts/thmanyahsans-Medium.woff2') format('woff2'); font-weight: 500; font-display: swap; }
 @font-face { font-family: 'Thmanyah Sans'; src: url('/fonts/thmanyahsans-Bold.woff2') format('woff2'); font-weight: 700; font-display: swap; }
@@ -25,7 +24,7 @@
   --ok-ink: #0e5a33;
   --danger: #9b2c2c;
   --danger-soft: #fbe3e3;
-  --display: 'Thmanyah Display', 'Thmanyah Sans', Georgia, 'Times New Roman', serif;
+  --display: 'Thmanyah Sans', system-ui, -apple-system, 'Segoe UI', Tahoma, sans-serif;
   --sans: 'Thmanyah Sans', system-ui, -apple-system, 'Segoe UI', Tahoma, sans-serif;
   --radius: 16px;
   --radius-sm: 12px;
@@ -55,9 +54,7 @@ p { margin: 0; }
 .topbar { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 20; background: var(--surface); border-bottom: 1px solid var(--line); }
 .topbar-inner { max-width: 1120px; margin: 0 auto; display: flex; align-items: center; gap: 8px; padding: 10px 16px; min-height: 64px; }
 .brand { display: flex; align-items: center; gap: 8px; text-decoration: none; color: var(--navy); }
-.brand img { width: 34px; height: 34px; }
-.wordmark { font-family: var(--sans); font-weight: 700; font-size: 20px; letter-spacing: -0.3px; direction: ltr; unicode-bidi: isolate; }
-.wordmark span { color: #2e8bae; }
+.brand img { height: 30px; width: auto; display: block; }
 .role-tag { font-size: 12px; font-weight: 700; padding: 3px 8px; border-radius: 6px; background: var(--navy); color: #fff; }
 .topnav { display: none; gap: 2px; margin-inline-start: 16px; }
 .topnav a { padding: 10px 12px; border-radius: 10px; text-decoration: none; font-weight: 500; color: var(--muted); }
@@ -66,6 +63,7 @@ p { margin: 0; }
 .icon-btn { position: relative; width: 44px; height: 44px; border: none; background: transparent; color: var(--navy); display: inline-flex; align-items: center; justify-content: center; border-radius: 12px; cursor: pointer; text-decoration: none; }
 .icon-btn:hover { background: var(--chip); }
 .dot { position: absolute; top: 6px; inset-inline-end: 4px; min-width: 18px; height: 18px; padding: 0 5px; border-radius: 9px; background: var(--gold); color: var(--navy); font-size: 11px; font-weight: 700; display: flex; align-items: center; justify-content: center; border: 2px solid var(--surface); }
+.top-signin { display: none; white-space: nowrap; }
 .lang-btn { height: 40px; padding: 0 12px; border: 1px solid var(--line); background: var(--surface); border-radius: 20px; cursor: pointer; font-size: 15px; }
 .main { flex: 1; width: 100%; max-width: 1120px; margin: 0 auto; padding-bottom: 96px; min-width: 0; }
 .tabbar { position: fixed; bottom: 0; inset-inline: 0; z-index: 20; display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); background: var(--surface); border-top: 1px solid var(--line); padding: 4px 4px calc(8px + env(safe-area-inset-bottom)); }
@@ -76,6 +74,7 @@ p { margin: 0; }
 .demo-banner { background: var(--navy); color: #d6eef5; font-size: 13px; text-align: center; padding: 6px 12px; }
 .demo-banner button { background: none; border: none; color: var(--sky); text-decoration: underline; cursor: pointer; font-size: 13px; padding: 0 4px; }
 @media (min-width: 960px) {
+  .top-signin { display: inline-flex; }
   .topnav { display: flex; }
   .tabbar { display: none; }
   .main { padding: 0 24px 64px; }
@@ -259,7 +258,7 @@ table.compare th[scope='row'] { font-weight: 500; color: var(--muted); }
 .list-item:hover { background: #fbfdfe; }
 .list-item.unread { background: var(--sky-soft); }
 .empty { text-align: center; padding: 36px 20px; display: flex; flex-direction: column; align-items: center; gap: 12px; }
-.empty img { width: 72px; height: 72px; opacity: 0.9; }
+.empty img { width: 72px; height: auto; opacity: 0.9; }
 .skeleton { background: linear-gradient(90deg, #e8f0f3, #f4f8fa, #e8f0f3); background-size: 200% 100%; animation: shimmer 1.2s infinite; border-radius: var(--radius); }
 @keyframes shimmer { to { background-position: -200% 0; } }
 

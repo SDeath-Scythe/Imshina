@@ -35,7 +35,7 @@ export function Login({ query }: { query: Record<string, string> }) {
   return (
     <div className="page" style={{ maxWidth: 460, margin: '0 auto', width: '100%' }}>
       <div className="center stack" style={{ alignItems: 'center', gap: 8 }}>
-        <img src={asset('logo-full.png')} alt="" style={{ width: 140 }} />
+        <img src={asset('tg-logo-stacked.svg')} alt="" style={{ width: 150 }} />
         <h1>{t('auth.welcome_back')}</h1>
       </div>
       <form className="card stack" onSubmit={go}>

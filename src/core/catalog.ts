@@ -56,4 +56,4 @@ export const TOURIST_RATING_KEYS = ['communication', 'punctuality', 'respect'];
 
 export const AVATAR_COLORS = 6;
 
-export const PHOTO_LIBRARY = ['ishtar', 'brick-bull', 'malwiya', 'arch', 'ziggurat', 'skyline', 'map', 'wing'];
+export const PHOTO_LIBRARY = ['ishtar', 'gate', 'babylon', 'arch', 'brick-bull', 'malwiya', 'ziggurat', 'skyline', 'map', 'wing'];

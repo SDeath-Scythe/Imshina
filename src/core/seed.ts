@@ -71,7 +71,7 @@ const GUIDES: GuideSeed[] = [
     bioAr: 'درستُ الآثار في جامعة بغداد وعملتُ في تنقيبات بابل. سأريك شارع الموكب كما رآه المنقّبون، وأيّ الطابوق أصلي وأيّه أُعيد بناؤه، وأفضل مكان للمسگوف بعدها.',
     price: 60, cities: ['baghdad', 'babylon'], languages: [{ code: 'ar', level: 'native' }, { code: 'en', level: 'fluent' }, { code: 'de', level: 'basic' }],
     specialities: ['history', 'archaeology', 'museums', 'food'], places: [5, 4, 13, 14, 15, 16, 17, 18],
-    photos: [['lib:brick-bull', 'Babylon, the glazed bulls', 'بابل، الثيران المزجّجة'], ['lib:ziggurat', 'Day trip to Borsippa', 'رحلة إلى برس نمرود'], ['lib:ishtar', 'At the Ishtar Gate', 'عند بوابة عشتار']],
+    photos: [['lib:babylon', 'The walls of Babylon', 'أسوار بابل'], ['lib:ishtar', 'At the Ishtar Gate', 'عند بوابة عشتار'], ['lib:brick-bull', 'Babylon, the glazed bulls', 'بابل، الثيران المزجّجة'], ['lib:ziggurat', 'Day trip to Borsippa', 'رحلة إلى برس نمرود']],
     verification: 'verified', pastTours: 14, replyMins: [12, 30], ratingBias: 0.15,
   },
   {
@@ -82,7 +82,7 @@ const GUIDES: GuideSeed[] = [
     bioAr: 'وُلدتُ في باب الشيخ. جولاتي تبدأ من شارع المتنبي صباح الجمعة إلى سوق الصفافير وأطيب فطور كاهي وگيمر في المدينة. أحب تصوير الشارع ويسعدني مساعدتك في صورك.',
     price: 40, cities: ['baghdad'], languages: [{ code: 'ar', level: 'native' }, { code: 'en', level: 'fluent' }],
     specialities: ['food', 'markets', 'photography', 'history'], places: [2, 3, 4, 5],
-    photos: [['lib:arch', 'Abbasid brickwork', 'الطابوق العباسي'], ['lib:skyline', 'Sunset over the Tigris', 'الغروب على دجلة']],
+    photos: [['lib:skyline', 'Sunset over the Tigris', 'الغروب على دجلة'], ['lib:arch', 'Abbasid brickwork', 'الطابوق العباسي']],
     verification: 'verified', pastTours: 9, replyMins: [35, 90], ratingBias: 0.35,
   },
   {
@@ -159,7 +159,7 @@ const GUIDES: GuideSeed[] = [
     bioAr: 'كانت سامراء عاصمة العباسيين نصف قرن. أصطحب المجموعات الصغيرة إلى الملوية في الساعة المناسبة للتصوير، وأشرح لماذا بُنيت المدينة وهُجرت بهذه السرعة. أتحدث التركية أيضًا.',
     price: 45, cities: ['samarra', 'baghdad'], languages: [{ code: 'ar', level: 'native' }, { code: 'en', level: 'good' }, { code: 'tr', level: 'good' }],
     specialities: ['archaeology', 'religious', 'photography'], places: [19, 20, 1, 3],
-    photos: [['lib:malwiya', 'The Malwiya at golden hour', 'الملوية وقت الغروب'], ['lib:arch', 'Through the arch', 'من خلال القوس']],
+    photos: [['lib:arch', 'The Malwiya through the arch', 'الملوية من خلال القوس'], ['lib:malwiya', 'The Malwiya at golden hour', 'الملوية وقت الغروب']],
     verification: 'verified', pastTours: 6, replyMins: [30, 80], ratingBias: 0.25,
   },
   {

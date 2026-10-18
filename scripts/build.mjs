@@ -67,7 +67,7 @@ async function buildDemo() {
   });
   const assets = {};
   for (const f of fs.readdirSync(r('public/img'))) {
-    const type = f.endsWith('.png') ? 'image/png' : 'image/jpeg';
+    const type = f.endsWith('.png') ? 'image/png' : f.endsWith('.svg') ? 'image/svg+xml' : 'image/jpeg';
     assets[f] = `data:${type};base64,${b64(r('public/img', f))}`;
   }
   const icon = `data:image/png;base64,${b64(r('public/favicon.png'))}`;

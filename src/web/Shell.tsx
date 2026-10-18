@@ -89,10 +89,7 @@ export function Shell({ path, children }: { path: string; children: React.ReactN
       <header className="topbar">
         <div className="topbar-inner">
           <Link to="/" className="brand" aria-label={name}>
-            <img src={asset('logo-mark.png')} alt="" />
-            <span className="wordmark">
-              {brand.wordmark[0]} <span>{brand.wordmark[1]}</span>
-            </span>
+            <img src={asset('tg-logo-horizontal.svg')} alt="" />
           </Link>
           {(role === 'guide' || role === 'admin') && <span className="role-tag">{t('role.' + role)}</span>}
           <nav className="topnav" aria-label={t('nav.main')}>
@@ -118,7 +115,7 @@ export function Shell({ path, children }: { path: string; children: React.ReactN
                 <Icon name="user" />
               </Link>
             ) : (
-              <button type="button" className="btn sm outline" onClick={() => navigate('/login')}>
+              <button type="button" className="btn sm outline top-signin" onClick={() => navigate('/login')}>
                 {t('nav.sign_in')}
               </button>
             )}

@@ -1,10 +1,8 @@
 // Everything that names or styles the product lives here.
-// To rename the app, change `name` and `nameAr` (and swap the logo files in /public/brand).
+// To rename the app, change `name` and `nameAr`, and replace the logo files in /public/img (tg-*.svg).
 export const brand = {
   name: 'Trip guide',
   nameAr: 'Trip guide',
-  // Split for the two-colour wordmark: first part navy, second part teal.
-  wordmark: ['Trip', 'guide'] as [string, string],
   tagline: 'Post your trip. Iraqi guides send you offers.',
   taglineAr: 'انشر رحلتك، ودَع المرشدين العراقيين يرسلون عروضهم.',
   colors: {

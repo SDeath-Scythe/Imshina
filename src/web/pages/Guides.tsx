@@ -238,7 +238,7 @@ export function GuideProfile({ id }: { id: string }) {
   return (
     <div>
       <div className="banner-img">
-        <img src={cover ? (cover.startsWith('lib:') ? asset(cover.slice(4) + '.jpg') : cover) : asset('ishtar.jpg')} alt="" />
+        <img src={cover ? (cover.startsWith('lib:') ? asset(cover.slice(4) + '.jpg') : cover) : asset('gate.jpg')} alt="" />
       </div>
       <div className="split" style={{ padding: '0 0 24px' }}>
         <div className="stack-lg">
